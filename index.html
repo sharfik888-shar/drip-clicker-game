@@ -122,7 +122,6 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 // ТВОИ ДАННЫЕ ИЗ SUPABASE
 const SUPABASE_URL = "https://insflwxculpciwwcfplc.supabase.co"; 
 const SUPABASE_ANON_KEY = "sb_publishable_sjXSiT-ZE03BQptllpdzvg_sO8Ihgs-";
-
 const { createClient } = supabase;
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tg=window.Telegram&&window.Telegram.WebApp;
@@ -174,19 +173,7 @@ const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 const EQ_POS = { head: { top: '11%', left: '50%', scale: 1.1, z: 6 }, neck: { top: '23%', left: '50%', scale: 0.6, z: 5 }, top: { top: '33%', left: '50%', scale: 2.0, z: 3 }, bot: { top: '68%', left: '50%', scale: 1.8, z: 2 }, shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 }, wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 }, back: { top: '35%', left: '12%', scale: 1.5, z: 1 }, waist: { top: '49%', left: '50%', scale: 1.2, z: 4 } };
-
-// ПРОМОКОДЫ (ДОБАВЛЕНЫ M0N3SY и RAGOF)
-const PROMOS = { 
-    'JAMBO': { r: 50000 }, 
-    'ITICOV': { r: 25000 }, 
-    '2026': { r: 100000 }, 
-    'DRIL': { r: 75000 }, 
-    'DRIP': { r: 30000 }, 
-    'USA': { r: 150000 },
-    'M0N3SY': { r: 400000 },
-    'RAGOF': { r: 500000 }
-};
-
+const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100000 }, 'DRIL': { r: 75000 }, 'DRIP': { r: 30000 }, 'USA': { r: 150000 }, 'M0N3SY': { r: 400000 }, 'RAGOF': { r: 500000 } };
 function applyPromo() {
     const input = document.getElementById('promo-input'); if (!input) return; const code = input.value.trim().toUpperCase(); if (!code) return;
     if (!S.promos) S.promos = {}; if (S.promos[code]) { alert('Этот промокод уже активирован!'); return; }
