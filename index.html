@@ -42,25 +42,85 @@ nav svg{width:20px;height:20px;fill:currentColor;}
 .up-card-info b{font-size:16px;display:block;margin-bottom:4px;}
 .up-card-info small{color:var(--mut);font-size:12px;}
 
-/* МАНЕКЕН */
-.stand-container{position:relative;width:100%;height:350px;background:radial-gradient(circle at 50% 20%, #1a1a24, #09090b);border-radius:20px;border:1px solid var(--card-border);margin-bottom:15px;display:flex;justify-content:center;align-items:center;overflow:hidden;}
-.mannequin-base{position:absolute;width:150px;height:300px;opacity:0.3;}
-.eq-item{position:absolute;width:100px;height:100px;transition:0.3s;}
-.eq-item svg{width:100%;height:100%;}
-.slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;}
+/* КРАСИВЫЙ СТЕНД */
+.stand-container {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    background: radial-gradient(circle at 50% 30%, #1a1a24 0%, #09090b 80%);
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Ставим на "пол"
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+}
+
+/* Подсветка сзади */
+.stand-spotlight {
+    position: absolute;
+    top: 10%;
+    width: 150px;
+    height: 150px;
+    background: var(--ac);
+    filter: blur(80px);
+    opacity: 0.15;
+    border-radius: 50%;
+}
+
+/* Подиум */
+.stand-podium {
+    position: absolute;
+    bottom: 15px;
+    width: 180px;
+    height: 30px;
+    background: linear-gradient(to bottom, #222, #111);
+    border-radius: 50%;
+    border-bottom: 2px solid #333;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(182,255,60,0.1);
+}
+
+/* Базовый манекен (темный, матовый) */
+.mannequin-base {
+    position: absolute;
+    bottom: 30px;
+    width: 140px;
+    height: 320px;
+}
+
+/* Вещи на манекене */
+.eq-item {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
+    pointer-events: none; /* Чтобы не мешали кликам */
+}
+.eq-item svg {
+    width: 100%;
+    height: 100%;
+}
+
+.slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:0.2s;}
+.slot-btn:active {transform: scale(0.98);}
 .slot-btn b{font-size:14px;}
-.slot-btn small{color:var(--mut);font-size:12px;margin-left:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
+.slot-btn small{color:var(--mut);font-size:12px;margin-left:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
 
 /* МОДАЛКА ВЫБОРА */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:none;flex-direction:column;justify-content:flex-end;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:100;display:none;flex-direction:column;justify-content:flex-end;}
 .modal.open{display:flex;}
-.modal-content{background:var(--bg);border-top-left-radius:24px;border-top-right-radius:24px;max-height:70vh;overflow-y:auto;padding:20px;border-top:1px solid var(--card-border);}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
+.modal-content{background:var(--bg);border-top-left-radius:24px;border-top-right-radius:24px;max-height:75vh;overflow-y:auto;padding:20px;border-top:1px solid var(--card-border);animation: slideUp 0.3s ease;}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:2;}
 .modal-header h3{margin:0;}
 
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.cell{background:var(--card);border-radius:14px;padding:10px 4px;text-align:center;font-size:11px;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
-.cell.own{border-color:var(--ac);}
+.cell{background:var(--card);border-radius:14px;padding:10px 4px;text-align:center;font-size:11px;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:0.2s;}
+.cell:active{transform:scale(0.95);}
+.cell.own{border-color:rgba(255,255,255,0.1);}
 .cell .artw{width:60px;height:60px;}
 .artw{display:block;width:100%;height:100%;}
 .artw svg{width:100%;height:100%;display:block;}
@@ -83,7 +143,6 @@ nav svg{width:20px;height:20px;fill:currentColor;}
  </nav>
 </div>
 
-<!-- Модальное окно для выбора вещи на стенд -->
 <div class="modal" id="select-modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -112,7 +171,6 @@ const BP={cap:[50,44],cargo:[38,34],hood:[50,52],bag:[50,50],sneak:[64,56],mask:
 
 function hs(n){let x=((n+1)*2654435761)>>>0;x^=x>>>15;x=Math.imul(x,2246822519)>>>0;x^=x>>>13;return x>>>0}
 
-// ГЕНЕРАЦИЯ 21 000+ ВЕЩЕЙ
 let ITEMS=[];
 (function(){
     const MU=[1,2.2,5,12],EN={m:'ый',f:'ая',n:'ое',p:'ые'};let n=0;
@@ -136,56 +194,55 @@ let ITEMS=[];
         }
     }
 })();
-// Быстрый поиск вещей по ID
 const IM = {}; ITEMS.forEach(i => IM[i.id] = i);
 
-function artSpan(i) {
+// ВАЖНО: Добавлен параметр noBg для отрисовки вещей на стенде без фона
+function artSpan(i, noBg = false) {
     const id='a'+i.id, fx=i.fl?-1:1, pt=(['chain','shades'].includes(i.t)||i.t[0]==='w')?0:i.pt;
     const D={ 1:"<pattern id='"+id+"p' width='12' height='12' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><rect width='12' height='12' fill='"+i.c1+"'/><rect width='5' height='12' fill='"+i.c2+"'/></pattern>", 2:"<pattern id='"+id+"p' width='14' height='14' patternUnits='userSpaceOnUse'><rect width='14' height='14' fill='"+i.c1+"'/><circle cx='7' cy='7' r='3' fill='"+i.c2+"'/></pattern>", 3:"<pattern id='"+id+"p' width='20' height='20' patternUnits='userSpaceOnUse'><rect width='20' height='20' fill='"+i.c1+"'/><rect width='10' height='10' fill='"+i.c2+"'/><rect x='10' y='10' width='10' height='10' fill='"+i.c2+"'/></pattern>", 4:"<pattern id='"+id+"p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='"+i.c1+"'/><ellipse cx='8' cy='9' rx='9' ry='5' fill='"+i.c2+"' opacity='.75'/><ellipse cx='23' cy='22' rx='8' ry='6' fill='"+i.c2+"' opacity='.75'/></pattern>", 5:"<linearGradient id='"+id+"p' x1='0' x2='1' y1='0' y2='0'><stop offset='.5' stop-color='"+i.c1+"'/><stop offset='.5' stop-color='"+i.c2+"'/></linearGradient>", 6:"<linearGradient id='"+id+"p' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='"+i.c1+"'/><stop offset='1' stop-color='"+i.c2+"'/></linearGradient>" };
     let art=ART[i.t].split(MAIN[i.t]).join(pt?"url(#"+id+"p)":i.c1);
     if(ACC[i.t])art=art.split(ACC[i.t]).join(i.c2);
-    const bg=['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r],rc=['','','#b36bff','#ffb02e'][i.r],bp=BP[i.t],bd=i.bi!==undefined&&bp?"<circle cx='"+bp[0]+"' cy='"+bp[1]+"' r='8' fill='#111' stroke='#fff' stroke-width='1.2'/><text transform='translate("+bp[0]+" "+(bp[1]+3)+") scale("+fx+" 1)' text-anchor='middle' font-size='"+(BR[i.bi][1].length>1?7:9)+"' font-weight='900' fill='#fff' font-family='Arial,sans-serif'>"+BR[i.bi][1]+"</text>":'';
-    return "<span class='artw'><svg viewBox='0 0 100 100'><defs>"+(D[pt]||'')+"</defs><rect width='100' height='100' fill='"+bg+"'/><g transform='translate(50 50) rotate("+i.rt+") scale("+(fx*i.sc)+" "+i.sc+") translate(-50 -50)'>"+art+bd+"</g>"+(rc?"<rect x='1.5' y='1.5' width='97' height='97' rx='8' fill='none' stroke='"+rc+"' stroke-width='3'/>":'')+"</svg></span>";
+    
+    // Если noBg, мы не рисуем квадрат сзади
+    const bg = noBg ? 'transparent' : ['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r];
+    const rc = noBg ? '' : ['','','#b36bff','#ffb02e'][i.r];
+    
+    const bp=BP[i.t],bd=i.bi!==undefined&&bp?"<circle cx='"+bp[0]+"' cy='"+bp[1]+"' r='8' fill='#111' stroke='#fff' stroke-width='1.2'/><text transform='translate("+bp[0]+" "+(bp[1]+3)+") scale("+fx+" 1)' text-anchor='middle' font-size='"+(BR[i.bi][1].length>1?7:9)+"' font-weight='900' fill='#fff' font-family='Arial,sans-serif'>"+BR[i.bi][1]+"</text>":'';
+    
+    return `<span class='artw'><svg viewBox='0 0 100 100'><defs>${D[pt]||''}</defs>${noBg?'':`<rect width='100' height='100' fill='${bg}'/>`}<g transform='translate(50 50) rotate(${i.rt}) scale(${fx*i.sc} ${i.sc}) translate(-50 -50)'>${art}${bd}</g>${rc?`<rect x='1.5' y='1.5' width='97' height='97' rx='8' fill='none' stroke='${rc}' stroke-width='3'/>`:''}</svg></span>`;
 }
 
-// СТЕЙТ ИГРЫ (Добавлен eq для стенда)
 let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0 };
-try { const x = localStorage.getItem('drip4'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
-const save = () => { try { localStorage.setItem('drip4', JSON.stringify(S)); } catch(e) {} };
+try { const x = localStorage.getItem('drip6'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
+const save = () => { try { localStorage.setItem('drip6', JSON.stringify(S)); } catch(e) {} };
 
-// ЛОГИКА БОНУСОВ СТЕНДА
 const getStandValue = () => Object.values(S.eq).reduce((sum, id) => sum + (id && IM[id] ? IM[id].p : 0), 0);
-const getStandBonus = () => 1 + (getStandValue() / 50000); // +100% к доходу за каждые 50к на стенде
+const getStandBonus = () => 1 + (getStandValue() / 50000);
 
 const getTapValue = () => Math.floor(10 * S.tapLvl * getStandBonus());
 const getAutoValue = () => Math.floor(S.autoLvl * 15 * getStandBonus());
 const getTapCost = () => Math.floor(100 * Math.pow(1.6, S.tapLvl - 1));
 const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 
-// СЛОТЫ ДЛЯ СТЕНДА
-const SLOTS = {
-    head: ['cap', 'mask', 'shades'],
-    neck: ['chain', 'grillz'],
-    top: ['hood', 'puff', 'jack', 'tee'],
-    bot: ['cargo', 'jeans'],
-    shoe: ['sneak', 'drill'],
-    acc: ['bag', 'pack', 'watch', 'belt', 'socks', 'boxers']
-};
-const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея', top: 'Верх', bot: 'Низ', shoe: 'Обувь', acc: 'Аксессуар' };
+const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
+const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 
-// Позиции для отрисовки на манекене
+// ИДЕАЛЬНЫЕ ПОЗИЦИИ (top, left, scale, z-index)
+// Манекен имеет рост 320px и ширину 140px (находится в центре)
 const EQ_POS = {
-    head: { top: '15%', left: '50%', transform: 'translateX(-50%) scale(0.6)' },
-    neck: { top: '35%', left: '50%', transform: 'translateX(-50%) scale(0.4)' },
-    top: { top: '45%', left: '50%', transform: 'translateX(-50%) scale(0.8)' },
-    bot: { top: '65%', left: '50%', transform: 'translateX(-50%) scale(0.8)' },
-    shoe: { top: '85%', left: '50%', transform: 'translateX(-50%) scale(0.6)' },
-    acc: { top: '50%', left: '80%', transform: 'translateX(-50%) scale(0.5)' }
+    head: { top: '8%', left: '50%', transform: 'translateX(-50%) scale(0.7)', z: 10 },
+    neck: { top: '26%', left: '50%', transform: 'translateX(-50%) scale(0.5)', z: 9 },
+    top: { top: '25%', left: '50%', transform: 'translateX(-50%) scale(1.1)', z: 5 },
+    bot: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.95)', z: 4 },
+    shoe: { top: '85%', left: '50%', transform: 'translateX(-50%) scale(0.75)', z: 6 },
+    wrist: { top: '50%', left: '20%', transform: 'translateX(-50%) scale(0.3) rotate(-15deg)', z: 11 }, // Левая рука
+    back: { top: '30%', left: '25%', transform: 'translateX(-50%) scale(0.8)', z: 2 }, // За спиной
+    waist: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.55)', z: 7 }
 };
 
 function head(){
  $('bal').textContent = fmt(S.r) + ' ₽';
- $('sub').textContent = '+' + fmt(getAutoValue()) + ' ₽/сек (x' + getStandBonus().toFixed(2) + ' от стенда)';
+ $('sub').textContent = '+' + fmt(getAutoValue()) + ' ₽/сек (x' + getStandBonus().toFixed(2) + ')';
  $('rank').textContent = '🔥 Уличный дриппер';
 }
 
@@ -241,52 +298,69 @@ function view(){
       if(invLimit < owned.length) h += `<button class="btn" onclick="invLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${invLimit} из ${owned.length})</button>`;
   }
  } else if(tab==='stand'){
-  // ЭКРАН СТЕНДА
-  h=`<h3 style="margin-top:0">Твой Стенд</h3>`;
+  h=`<h3 style="margin-top:0">Примерочная</h3>`;
   
-  // Манекен
+  // КРАСИВЫЙ СТЕНД
   h+=`<div class="stand-container">
-      <!-- Силуэт манекена -->
-      <svg class="mannequin-base" viewBox="0 0 100 200">
-          <circle cx="50" cy="20" r="15" fill="#fff"/>
-          <rect x="30" y="40" width="40" height="60" rx="10" fill="#fff"/>
-          <rect x="35" y="100" width="12" height="70" rx="6" fill="#fff"/>
-          <rect x="53" y="100" width="12" height="70" rx="6" fill="#fff"/>
+      <div class="stand-spotlight"></div>
+      <div class="stand-podium"></div>
+      
+      <!-- Темный манекен с анатомией -->
+      <svg class="mannequin-base" viewBox="0 0 100 200" preserveAspectRatio="xMidYMax meet">
+          <defs>
+              <linearGradient id="mannequin-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#2a2a2a"/>
+                  <stop offset="50%" stop-color="#3a3a3a"/>
+                  <stop offset="100%" stop-color="#1a1a1a"/>
+              </linearGradient>
+          </defs>
+          <!-- Голова -->
+          <ellipse cx="50" cy="20" rx="14" ry="16" fill="url(#mannequin-grad)"/>
+          <!-- Шея -->
+          <rect x="45" y="35" width="10" height="10" fill="url(#mannequin-grad)"/>
+          <!-- Торс -->
+          <path d="M30 45 Q50 40 70 45 L75 105 L25 105 Z" fill="url(#mannequin-grad)"/>
+          <!-- Руки -->
+          <path d="M30 45 Q15 60 15 95 L25 95 Q25 65 35 50 Z" fill="url(#mannequin-grad)"/>
+          <path d="M70 45 Q85 60 85 95 L75 95 Q75 65 65 50 Z" fill="url(#mannequin-grad)"/>
+          <!-- Ноги -->
+          <path d="M30 105 L40 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
+          <path d="M70 105 L60 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
       </svg>`;
       
-  // Отрисовка надетых вещей
-  for(let slot in SLOTS) {
-      if(S.eq[slot] && IM[S.eq[slot]]) {
-          h+=`<div class="eq-item" style="top:${EQ_POS[slot].top};left:${EQ_POS[slot].left};transform:${EQ_POS[slot].transform};">${artSpan(IM[S.eq[slot]])}</div>`;
-      }
-  }
+  // Отрисовка надетых вещей строго по слоям (Z-index)
+  const eqArray = Object.keys(SLOTS).map(slot => ({ slot, item: IM[S.eq[slot]], pos: EQ_POS[slot] }))
+                                     .filter(x => x.item)
+                                     .sort((a, b) => a.pos.z - b.pos.z); // Сортируем по слоям
+      
+  eqArray.forEach(x => {
+      h+=`<div class="eq-item" style="top:${x.pos.top};left:${x.pos.left};transform:${x.pos.transform}; z-index:${x.pos.z};">
+            ${artSpan(x.item, true)} <!-- true = без фона -->
+          </div>`;
+  });
+  
   h+=`</div>`;
   
-  // Инфо о бонусе
   h+=`<div class="card" style="background:rgba(182,255,60,0.1);border-color:var(--ac);">
-      <div class="t"><b>Бонус Стенда</b><small>Стоимость вещей: ${fmt(getStandValue())} ₽</small></div>
+      <div class="t"><b>Флекс Стенда</b><small>Стоимость: ${fmt(getStandValue())} ₽</small></div>
       <b style="color:var(--ac);font-size:20px;">x${getStandBonus().toFixed(2)}</b>
   </div>`;
   
-  // Слоты для экипировки
-  h+=`<h4 style="margin:15px 0 10px;color:var(--mut);">Слоты экипировки</h4>`;
+  h+=`<div class="grid" style="grid-template-columns: 1fr 1fr;">`;
   for(let slot in SLOTS) {
       const eqId = S.eq[slot];
       const item = eqId ? IM[eqId] : null;
-      h+=`<div class="slot-btn" onclick="openSelect('${slot}')">
-          <div style="display:flex;align-items:center;gap:10px;">
-             <div class="ic" style="width:40px;height:40px;">${item ? artSpan(item) : '＋'}</div>
+      h+=`<div class="slot-btn" onclick="openSelect('${slot}')" style="flex-direction:column; text-align:center; padding:15px 10px; gap:8px;">
+             <div class="ic" style="width:50px;height:50px;">${item ? artSpan(item) : '＋'}</div>
              <div>
-                 <b>${SLOT_NAMES[slot]}</b>
-                 <small>${item ? item.n : 'Пусто'}</small>
+                 <b style="font-size:12px;">${SLOT_NAMES[slot]}</b>
+                 <small style="margin:0; max-width:100px;">${item ? item.n : 'Пусто'}</small>
              </div>
-          </div>
-          <button class="btn" style="padding:8px 12px;font-size:12px;">Сменить</button>
       </div>`;
   }
+  h+=`</div>`;
   
  } else if(tab==='top'){
-  // ОБНОВЛЕННЫЙ ТОП
   const invValue = Object.keys(S.own).reduce((sum, id) => sum + (IM[id] ? IM[id].p : 0), 0);
   h=`<h3 style="margin-top:0">Топ Дрипперов</h3>
      <p style="color:var(--mut);font-size:12px;margin-bottom:15px;">Рейтинг по общему флексу</p>
@@ -296,18 +370,9 @@ function view(){
      <div class="card"><div class="ic">🥉</div><div class="t"><b>@young_thug</b><small>Стенд: 500,000 ₽</small></div><b style="color:var(--ac)">1.5M ₽</b></div>
      
      <h4 style="margin:20px 0 10px;color:var(--mut);">Твоя статистика</h4>
-     <div class="card">
-         <div class="t"><b>Баланс</b></div>
-         <b style="color:var(--ac)">${fmt(S.r)} ₽</b>
-     </div>
-     <div class="card">
-         <div class="t"><b>Цена всех вещей</b><small>Общая стоимость инвентаря</small></div>
-         <b style="color:var(--ac)">${fmt(invValue)} ₽</b>
-     </div>
-     <div class="card">
-         <div class="t"><b>Цена вещей на стенде</b><small>Бонус к доходу</small></div>
-         <b style="color:var(--ac2)">${fmt(getStandValue())} ₽</b>
-     </div>`;
+     <div class="card"><div class="t"><b>Баланс</b></div><b style="color:var(--ac)">${fmt(S.r)} ₽</b></div>
+     <div class="card"><div class="t"><b>Цена всех вещей</b><small>Общая стоимость инвентаря</small></div><b style="color:var(--ac)">${fmt(invValue)} ₽</b></div>
+     <div class="card"><div class="t"><b>Цена вещей на стенде</b><small>Бонус к доходу</small></div><b style="color:var(--ac2)">${fmt(getStandValue())} ₽</b></div>`;
  }
  m.innerHTML=h;
  $('main').scrollTop = scrollPos; 
@@ -340,7 +405,6 @@ function buy(id){
     } else alert('Мало кэша!');
 }
 
-// МОДАЛКА ВЫБОРА ВЕЩИ
 let currentSlot = null;
 function openSelect(slot) {
     currentSlot = slot;
@@ -351,7 +415,7 @@ function openSelect(slot) {
     const list = $('modal-list');
     
     if(available.length === 0) {
-        list.innerHTML = '<p style="text-align:center;color:var(--mut);grid-column:1/-1;">Нет подходящих вещей в инвентаре</p>';
+        list.innerHTML = '<p style="text-align:center;color:var(--mut);grid-column:1/-1;">Нет вещей для этого слота</p>';
     } else {
         list.innerHTML = available.map(i => `<div class="cell own" onclick="equipItem('${i.id}')">${artSpan(i)}<div style="margin-top:5px;line-height:1.1">${i.n}</div></div>`).join('');
     }
@@ -362,6 +426,7 @@ function equipItem(id) {
     if(currentSlot) {
         S.eq[currentSlot] = id;
         save(); head(); view(); closeModal();
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     }
 }
 
