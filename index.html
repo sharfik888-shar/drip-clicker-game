@@ -43,67 +43,12 @@ nav svg{width:20px;height:20px;fill:currentColor;}
 .up-card-info small{color:var(--mut);font-size:12px;}
 
 /* КРАСИВЫЙ СТЕНД */
-.stand-container {
-    position: relative;
-    width: 100%;
-    height: 420px;
-    background: radial-gradient(circle at 50% 30%, #1a1a24 0%, #09090b 80%);
-    border-radius: 24px;
-    border: 1px solid var(--card-border);
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end; /* Ставим на "пол"
-    overflow: hidden;
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-}
-
-/* Подсветка сзади */
-.stand-spotlight {
-    position: absolute;
-    top: 10%;
-    width: 150px;
-    height: 150px;
-    background: var(--ac);
-    filter: blur(80px);
-    opacity: 0.15;
-    border-radius: 50%;
-}
-
-/* Подиум */
-.stand-podium {
-    position: absolute;
-    bottom: 15px;
-    width: 180px;
-    height: 30px;
-    background: linear-gradient(to bottom, #222, #111);
-    border-radius: 50%;
-    border-bottom: 2px solid #333;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(182,255,60,0.1);
-}
-
-/* Базовый манекен (темный, матовый) */
-.mannequin-base {
-    position: absolute;
-    bottom: 30px;
-    width: 140px;
-    height: 320px;
-}
-
-/* Вещи на манекене */
-.eq-item {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
-    pointer-events: none; /* Чтобы не мешали кликам */
-}
-.eq-item svg {
-    width: 100%;
-    height: 100%;
-}
-
+.stand-container {position: relative;width: 100%;height: 420px;background: radial-gradient(circle at 50% 30%, #1a1a24 0%, #09090b 80%);border-radius: 24px;border: 1px solid var(--card-border);margin-bottom: 15px;display: flex;justify-content: center;align-items: flex-end;overflow: hidden;box-shadow: inset 0 0 50px rgba(0,0,0,0.8);}
+.stand-spotlight {position: absolute;top: 10%;width: 150px;height: 150px;background: var(--ac);filter: blur(80px);opacity: 0.15;border-radius: 50%;}
+.stand-podium {position: absolute;bottom: 15px;width: 180px;height: 30px;background: linear-gradient(to bottom, #222, #111);border-radius: 50%;border-bottom: 2px solid #333;box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(182,255,60,0.1);}
+.mannequin-base {position: absolute;bottom: 30px;width: 140px;height: 320px;}
+.eq-item {position: absolute;width: 100px;height: 100px;transition: all 0.3s ease;filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));pointer-events: none;}
+.eq-item svg {width: 100%;height: 100%;}
 .slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:0.2s;}
 .slot-btn:active {transform: scale(0.98);}
 .slot-btn b{font-size:14px;}
@@ -127,6 +72,12 @@ nav svg{width:20px;height:20px;fill:currentColor;}
 </style>
 </head>
 <body>
+
+<!-- МУЗЫКА -->
+<audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
 <div id="app">
  <header>
   <div id="bal">0 ₽</div>
@@ -158,6 +109,39 @@ const tg=window.Telegram&&window.Telegram.WebApp;
 if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
+
+// --- ЛОГИКА МУЗЫКИ ---
+const bgMusic = document.getElementById('bg-music');
+bgMusic.volume = 0.4; // Громкость (от 0 до 1)
+let musicPlaying = false;
+let musicInitialized = false;
+
+// Включаем при первом тапе/клике
+document.body.addEventListener('pointerdown', () => {
+    if (!musicInitialized) {
+        musicInitialized = true;
+        bgMusic.play().then(() => {
+            musicPlaying = true;
+            updateMusicUI();
+        }).catch(e => console.log("Браузер заблокировал автоплей"));
+    }
+});
+
+function toggleMusic() {
+    if (bgMusic.paused) {
+        bgMusic.play();
+        musicPlaying = true;
+    } else {
+        bgMusic.pause();
+        musicPlaying = false;
+    }
+    updateMusicUI();
+}
+
+function updateMusicUI() {
+    const el = document.getElementById('music-status');
+    if (el) el.innerText = musicPlaying ? 'ВКЛ' : 'ВЫКЛ';
+}
 
 // --- ДВИЖОК ГЕНЕРАЦИИ ВЕЩЕЙ ---
 const ART={ cap:"<path d='M20 58 Q22 28 50 28 Q78 28 80 58Z' fill='#3a7bd5'/><path d='M62 56 Q92 54 92 66 L60 66Z' fill='#2a5aa0'/><rect x='20' y='56' width='62' height='5' fill='#1f3f73'/><circle cx='50' cy='28' r='3' fill='#fff'/>", cargo:"<path d='M30 15H70L76 85H55L50 40L45 85H24Z' fill='#6b705c'/><rect x='30' y='15' width='40' height='7' fill='#4d513f'/><rect x='28' y='50' width='14' height='14' fill='#555a47'/><rect x='58' y='50' width='14' height='14' fill='#555a47'/>", hood:"<path d='M34 20Q50 8 66 20L90 40L80 52L72 46V86H28V46L20 52L10 40Z' fill='#5a5a64'/><path d='M38 20Q50 34 62 20Q50 12 38 20Z' fill='#222'/><rect x='36' y='62' width='28' height='16' fill='#46464e'/><path d='M45 32V50M55 32V50' stroke='#ddd' stroke-width='2'/>", bag:"<path d='M18 40Q50 0 82 40' stroke='#444' stroke-width='5' fill='none'/><rect x='22' y='38' width='56' height='42' rx='6' fill='#222'/><path d='M22 50H78L50 62Z' fill='#333'/><rect x='46' y='58' width='8' height='8' rx='2' fill='#b6ff3c'/>", sneak:"<path d='M12 62V45Q30 44 38 34L50 44Q70 46 90 60V72H12Z' fill='#eee'/><rect x='12' y='68' width='78' height='9' rx='3' fill='#b6ff3c'/><path d='M38 34L50 44M44 40L52 36M50 44L58 40' stroke='#999' stroke-width='2' fill='none'/><path d='M12 62Q40 58 90 62' stroke='#ff3cac' stroke-width='3' fill='none'/>", chain:"<path d='M22 20Q50 90 78 20' stroke='#ffd34d' stroke-width='6' stroke-dasharray='9 3' fill='none' stroke-linecap='round'/><rect x='40' y='52' width='20' height='20' rx='4' fill='#ffd34d' transform='rotate(45 50 62)'/><circle cx='50' cy='62' r='4' fill='#fff'/>", shades:"<rect x='12' y='38' width='34' height='22' rx='8' fill='#111'/><rect x='54' y='38' width='34' height='22' rx='8' fill='#111'/><rect x='44' y='42' width='12' height='5' fill='#111'/><path d='M18 42L30 56M60 42L72 56' stroke='#666' stroke-width='3'/><path d='M12 42L4 38M88 42L96 38' stroke='#111' stroke-width='4'/>", mask:"<path d='M50 12Q80 12 80 48Q80 80 66 90H34Q20 80 20 48Q20 12 50 12Z' fill='#202024'/><rect x='28' y='36' width='44' height='14' rx='7' fill='#e8c9a0'/><circle cx='40' cy='43' r='3' fill='#111'/><circle cx='60' cy='43' r='3' fill='#111'/>", puff:"<path d='M34 16H66L90 40L84 72H72V86H28V72H16L10 40Z' fill='#6fc3f5'/><path d='M28 36H72M28 50H72M28 64H72' stroke='#3a8cc0' stroke-width='3'/><path d='M50 16V86' stroke='#2a6c98' stroke-width='3'/>", pack:"<rect x='25' y='14' width='50' height='72' rx='16' fill='#c0392b'/><rect x='33' y='48' width='34' height='26' rx='6' fill='#962d22'/><path d='M33 32H67' stroke='#fff' stroke-width='3'/><rect x='45' y='56' width='10' height='5' fill='#ffd34d'/><path d='M38 14Q50 2 62 14' stroke='#962d22' stroke-width='5' fill='none'/>", jack:"<path d='M34 16H66L90 40L84 76H72V88H28V76H16L10 40Z' fill='#2b2118'/><path d='M34 16L50 44L66 16Z' fill='#4a3a2b'/><path d='M50 44V88' stroke='#8a6a4a' stroke-width='2'/><rect x='60' y='56' width='10' height='3' fill='#aaa'/>", grillz:"<rect x='14' y='38' width='72' height='26' rx='12' fill='#a8322a'/><g fill='#ffd34d' stroke='#b8860b'><rect x='22' y='42' width='9' height='14' rx='3'/><rect x='31' y='42' width='9' height='14' rx='3'/><rect x='40' y='42' width='9' height='14' rx='3'/><rect x='49' y='42' width='9' height='14' rx='3'/><rect x='58' y='42' width='9' height='14' rx='3'/><rect x='67' y='42' width='9' height='14' rx='3'/></g><path d='M80 18L82 26L90 28L82 30L80 38L78 30L70 28L78 26Z' fill='#fff'/>", drill:"<path d='M12 62V45Q30 44 38 34L50 44Q70 46 90 60V72H12Z' fill='#16161a'/><rect x='12' y='68' width='78' height='9' rx='3' fill='#ff4a1c'/><path d='M60 52Q66 38 70 30Q72 42 80 48Q76 58 66 58Z' fill='#ff9a1c'/><path d='M12 62Q40 58 90 62' stroke='#ff4a1c' stroke-width='3' fill='none'/>", tee:"<path d='M30 20 L50 20 L70 20 L90 40 L80 50 L75 45 V85 H25 V45 L20 50 L10 40 Z' fill='#e8e8ee'/>", jeans:"<path d='M30 15H70L76 85H55L50 40L45 85H24Z' fill='#3d5a8a'/><rect x='30' y='15' width='40' height='7' fill='#2a4266'/>", watch:"<circle cx='50' cy='50' r='25' fill='#222'/><circle cx='50' cy='50' r='20' fill='#111' stroke='#ffd34d' stroke-width='2'/><path d='M50 35 V50 L60 55' stroke='#fff' stroke-width='3' fill='none' stroke-linecap='round'/><rect x='40' y='5' width='20' height='15' rx='3' fill='#333'/><rect x='40' y='80' width='20' height='15' rx='3' fill='#333'/>", belt:"<rect x='10' y='40' width='80' height='20' rx='5' fill='#333'/><rect x='40' y='30' width='20' height='40' rx='3' fill='#ffd34d'/><rect x='45' y='35' width='10' height='30' rx='2' fill='#222'/>", socks:"<path d='M20 20 H40 V60 Q40 80 20 80 H10 V20 Z' fill='#eee'/><rect x='20' y='20' width='20' height='10' fill='#333'/><path d='M60 20 H80 V60 Q80 80 60 80 H50 V20 Z' fill='#eee'/><rect x='60' y='20' width='20' height='10' fill='#333'/>", boxers:"<path d='M20 20 H80 L70 60 H55 L50 45 L45 60 H30 Z' fill='#222'/><path d='M20 20 H80 V30 H20 Z' fill='#333'/>" };
@@ -196,14 +180,12 @@ let ITEMS=[];
 })();
 const IM = {}; ITEMS.forEach(i => IM[i.id] = i);
 
-// ВАЖНО: Добавлен параметр noBg для отрисовки вещей на стенде без фона
 function artSpan(i, noBg = false) {
     const id='a'+i.id, fx=i.fl?-1:1, pt=(['chain','shades'].includes(i.t)||i.t[0]==='w')?0:i.pt;
     const D={ 1:"<pattern id='"+id+"p' width='12' height='12' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><rect width='12' height='12' fill='"+i.c1+"'/><rect width='5' height='12' fill='"+i.c2+"'/></pattern>", 2:"<pattern id='"+id+"p' width='14' height='14' patternUnits='userSpaceOnUse'><rect width='14' height='14' fill='"+i.c1+"'/><circle cx='7' cy='7' r='3' fill='"+i.c2+"'/></pattern>", 3:"<pattern id='"+id+"p' width='20' height='20' patternUnits='userSpaceOnUse'><rect width='20' height='20' fill='"+i.c1+"'/><rect width='10' height='10' fill='"+i.c2+"'/><rect x='10' y='10' width='10' height='10' fill='"+i.c2+"'/></pattern>", 4:"<pattern id='"+id+"p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='"+i.c1+"'/><ellipse cx='8' cy='9' rx='9' ry='5' fill='"+i.c2+"' opacity='.75'/><ellipse cx='23' cy='22' rx='8' ry='6' fill='"+i.c2+"' opacity='.75'/></pattern>", 5:"<linearGradient id='"+id+"p' x1='0' x2='1' y1='0' y2='0'><stop offset='.5' stop-color='"+i.c1+"'/><stop offset='.5' stop-color='"+i.c2+"'/></linearGradient>", 6:"<linearGradient id='"+id+"p' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='"+i.c1+"'/><stop offset='1' stop-color='"+i.c2+"'/></linearGradient>" };
     let art=ART[i.t].split(MAIN[i.t]).join(pt?"url(#"+id+"p)":i.c1);
     if(ACC[i.t])art=art.split(ACC[i.t]).join(i.c2);
     
-    // Если noBg, мы не рисуем квадрат сзади
     const bg = noBg ? 'transparent' : ['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r];
     const rc = noBg ? '' : ['','','#b36bff','#ffb02e'][i.r];
     
@@ -213,8 +195,8 @@ function artSpan(i, noBg = false) {
 }
 
 let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0 };
-try { const x = localStorage.getItem('drip6'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
-const save = () => { try { localStorage.setItem('drip6', JSON.stringify(S)); } catch(e) {} };
+try { const x = localStorage.getItem('drip7'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
+const save = () => { try { localStorage.setItem('drip7', JSON.stringify(S)); } catch(e) {} };
 
 const getStandValue = () => Object.values(S.eq).reduce((sum, id) => sum + (id && IM[id] ? IM[id].p : 0), 0);
 const getStandBonus = () => 1 + (getStandValue() / 50000);
@@ -227,16 +209,14 @@ const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 
-// ИДЕАЛЬНЫЕ ПОЗИЦИИ (top, left, scale, z-index)
-// Манекен имеет рост 320px и ширину 140px (находится в центре)
 const EQ_POS = {
     head: { top: '8%', left: '50%', transform: 'translateX(-50%) scale(0.7)', z: 10 },
     neck: { top: '26%', left: '50%', transform: 'translateX(-50%) scale(0.5)', z: 9 },
     top: { top: '25%', left: '50%', transform: 'translateX(-50%) scale(1.1)', z: 5 },
     bot: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.95)', z: 4 },
     shoe: { top: '85%', left: '50%', transform: 'translateX(-50%) scale(0.75)', z: 6 },
-    wrist: { top: '50%', left: '20%', transform: 'translateX(-50%) scale(0.3) rotate(-15deg)', z: 11 }, // Левая рука
-    back: { top: '30%', left: '25%', transform: 'translateX(-50%) scale(0.8)', z: 2 }, // За спиной
+    wrist: { top: '50%', left: '20%', transform: 'translateX(-50%) scale(0.3) rotate(-15deg)', z: 11 },
+    back: { top: '30%', left: '25%', transform: 'translateX(-50%) scale(0.8)', z: 2 },
     waist: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.55)', z: 7 }
 };
 
@@ -275,6 +255,9 @@ function view(){
              <button class="btn pk" onclick="buyUpgrade('auto')" ${S.r < getAutoCost() ? 'disabled' : ''}>Ур. ${S.autoLvl} | ${fmt(getAutoCost())} ₽</button>
          </div>
       </div>
+      
+      <!-- КНОПКА МУЗЫКИ -->
+      <button class="btn" onclick="toggleMusic()" style="width:100%; margin-top:10px;">🎵 Музыка: <span id="music-status">${musicPlaying ? 'ВКЛ' : 'ВЫКЛ'}</span></button>
      </div>`;
  } else if(tab==='shop'){
   h='<h3 style="margin-top:0">Дрип Шоп</h3>';
@@ -300,12 +283,10 @@ function view(){
  } else if(tab==='stand'){
   h=`<h3 style="margin-top:0">Примерочная</h3>`;
   
-  // КРАСИВЫЙ СТЕНД
   h+=`<div class="stand-container">
       <div class="stand-spotlight"></div>
       <div class="stand-podium"></div>
       
-      <!-- Темный манекен с анатомией -->
       <svg class="mannequin-base" viewBox="0 0 100 200" preserveAspectRatio="xMidYMax meet">
           <defs>
               <linearGradient id="mannequin-grad" x1="0" y1="0" x2="1" y2="0">
@@ -314,28 +295,22 @@ function view(){
                   <stop offset="100%" stop-color="#1a1a1a"/>
               </linearGradient>
           </defs>
-          <!-- Голова -->
           <ellipse cx="50" cy="20" rx="14" ry="16" fill="url(#mannequin-grad)"/>
-          <!-- Шея -->
           <rect x="45" y="35" width="10" height="10" fill="url(#mannequin-grad)"/>
-          <!-- Торс -->
           <path d="M30 45 Q50 40 70 45 L75 105 L25 105 Z" fill="url(#mannequin-grad)"/>
-          <!-- Руки -->
           <path d="M30 45 Q15 60 15 95 L25 95 Q25 65 35 50 Z" fill="url(#mannequin-grad)"/>
           <path d="M70 45 Q85 60 85 95 L75 95 Q75 65 65 50 Z" fill="url(#mannequin-grad)"/>
-          <!-- Ноги -->
           <path d="M30 105 L40 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
           <path d="M70 105 L60 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
       </svg>`;
       
-  // Отрисовка надетых вещей строго по слоям (Z-index)
   const eqArray = Object.keys(SLOTS).map(slot => ({ slot, item: IM[S.eq[slot]], pos: EQ_POS[slot] }))
                                      .filter(x => x.item)
-                                     .sort((a, b) => a.pos.z - b.pos.z); // Сортируем по слоям
+                                     .sort((a, b) => a.pos.z - b.pos.z);
       
   eqArray.forEach(x => {
       h+=`<div class="eq-item" style="top:${x.pos.top};left:${x.pos.left};transform:${x.pos.transform}; z-index:${x.pos.z};">
-            ${artSpan(x.item, true)} <!-- true = без фона -->
+            ${artSpan(x.item, true)}
           </div>`;
   });
   
