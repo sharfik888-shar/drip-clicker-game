@@ -58,7 +58,7 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .slot-btn b{font-size:14px;}
 .slot-btn small{color:var(--mut);font-size:12px;margin-left:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
 
-/* ФИЛЬТРЫ И ПОИСК */
+/* УПРАВЛЕНИЕ В ШОПЕ */
 .shop-controls {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
 .shop-search {width: 100%; padding: 14px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--card-border); color: var(--fg); font-size: 15px; outline: none; transition: 0.2s;}
 .shop-search:focus {border-color: var(--ac); box-shadow: 0 0 15px rgba(182,255,60,0.2);}
@@ -66,6 +66,20 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .shop-filters::-webkit-scrollbar {display: none;}
 .filter-btn {padding: 8px 16px;border-radius: 20px;background: var(--card);border: 1px solid var(--card-border);color: var(--mut);font-size: 13px;font-weight: 700;white-space: nowrap;cursor: pointer;transition: 0.2s;}
 .filter-btn.on {background: var(--ac);color: #10130a;border-color: var(--ac);}
+
+/* ТОП */
+.top-tabs {display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none;}
+.top-tabs::-webkit-scrollbar {display: none;}
+.top-tab {padding: 10px 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--card-border); color: var(--mut); font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap;}
+.top-tab.on {background: var(--ac2); color: #fff; border-color: var(--ac2); box-shadow: 0 0 15px rgba(255,60,172,0.3);}
+
+.top-row {display: flex; align-items: center; gap: 12px; background: var(--card); padding: 12px 16px; border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--card-border);}
+.top-row.me {border-color: var(--ac); background: rgba(182,255,60,0.1);}
+.top-row .pos {font-size: 16px; font-weight: 900; color: var(--mut); width: 25px; text-align: center;}
+.top-row.me .pos {color: var(--ac);}
+.top-row .name {flex: 1; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.top-row .val {font-weight: 900; font-size: 14px; color: var(--ac);}
+.top-row.me .val {color: var(--ac); text-shadow: 0 0 10px rgba(182,255,60,0.3);}
 
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:100;display:none;flex-direction:column;justify-content:flex-end;}
 .modal.open{display:flex;}
@@ -134,21 +148,11 @@ if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
 
-// --- МУЗЫКА (АВТОЗАПУСК ПРИ ЛЮБОМ ТАПЕ) ---
+// --- МУЗЫКА ---
 const bgMusic = document.getElementById('bg-music');
 let musicVolume = parseInt(localStorage.getItem('musicVol') || '40');
 bgMusic.volume = musicVolume / 100;
-
-function startMusic() {
-    // Если музыка на паузе, пробуем включить
-    if (bgMusic.paused) {
-        bgMusic.play().catch(e => {
-            console.log("Ждем взаимодействия для звука");
-        });
-    }
-}
-
-// Вешаем на все возможные события (тап, клик, скролл) на уровне всего документа
+function startMusic() { if (bgMusic.paused) bgMusic.play().catch(e => {}); }
 document.addEventListener('pointerdown', startMusic);
 document.addEventListener('touchstart', startMusic, {passive: true});
 document.addEventListener('click', startMusic);
@@ -209,9 +213,10 @@ function artSpan(i, noBg = false) {
     return `<span class='artw'><svg viewBox='0 0 100 100'><defs>${D[pt]||''}</defs>${noBg?'':`<rect width='100' height='100' fill='${bg}'/>`}<g transform='translate(50 50) rotate(${i.rt}) scale(${fx*i.sc} ${i.sc}) translate(-50 -50)'>${art}${bd}</g>${rc?`<rect x='1.5' y='1.5' width='97' height='97' rx='8' fill='none' stroke='${rc}' stroke-width='3'/>`:''}</svg></span>`;
 }
 
-let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
-try { const x = localStorage.getItem('drip9'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
-const save = () => { try { localStorage.setItem('drip9', JSON.stringify(S)); } catch(e) {} };
+// СТЕЙТ (Добавлены тапы и время)
+let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {}, taps: 0, timePlayed: 0 };
+try { const x = localStorage.getItem('drip10'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
+const save = () => { try { localStorage.setItem('drip10', JSON.stringify(S)); } catch(e) {} };
 
 const getStandValue = () => Object.values(S.eq).reduce((sum, id) => sum + (id && IM[id] ? IM[id].p : 0), 0);
 const getStandBonus = () => 1 + (getStandValue() / 50000);
@@ -253,8 +258,8 @@ function applyPromo() {
 
 function resetGame() {
     if (confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) {
-        localStorage.removeItem('drip9');
-        S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
+        localStorage.removeItem('drip10');
+        S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {}, taps: 0, timePlayed: 0 };
         save(); head(); view();
     }
 }
@@ -269,7 +274,8 @@ let tab='tap';
 let shopLimit = 20;
 let invLimit = 20;
 let shopFilter = 'all';
-let searchQuery = ''; // Переменная для поиска
+let searchQuery = '';
+let topTab = 'money'; // Текущая вкладка топа (money, taps, time, set)
 
 const CATEGORIES = {
     'all': { name: 'Все', types: null },
@@ -280,21 +286,59 @@ const CATEGORIES = {
     'acc': { name: 'Аксессуары', types: ['chain', 'bag', 'pack', 'watch', 'belt'] }
 };
 
-function setShopFilter(f) {
-    shopFilter = f;
-    shopLimit = 20;
+// ФЕЙКОВЫЕ ИГРОКИ ДЛЯ ТОПА
+const FAKE_PLAYERS = [
+    { name: '@mega_drip', money: 999999, taps: 15000, timePlayed: 86400, setValue: 500000 },
+    { name: '@trap_star', money: 850000, taps: 12000, timePlayed: 72000, setValue: 350000 },
+    { name: '@young_thug', money: 500000, taps: 8000, timePlayed: 50000, setValue: 200000 },
+    { name: '@drill_king', money: 250000, taps: 5000, timePlayed: 30000, setValue: 100000 },
+    { name: '@flex_master', money: 100000, taps: 3000, timePlayed: 15000, setValue: 50000 },
+    { name: '@street_god', money: 50000, taps: 1500, timePlayed: 8000, setValue: 20000 },
+    { name: '@drip_lord', money: 20000, taps: 800, timePlayed: 4000, setValue: 10000 },
+    { name: '@newbie_1', money: 5000, taps: 200, timePlayed: 1000, setValue: 2000 }
+];
+
+function setTopTab(t) {
+    topTab = t;
     view();
 }
 
+function getTopList() {
+    const myName = (tg?.initDataUnsafe?.user?.username) ? '@' + tg.initDataUnsafe.user.username : 'Ты';
+    
+    // Добавляем себя в список
+    const allPlayers = [...FAKE_PLAYERS, {
+        name: myName,
+        money: S.r,
+        taps: S.taps,
+        timePlayed: S.timePlayed,
+        setValue: getStandValue(),
+        isMe: true
+    }];
+
+    // Сортировка
+    if (topTab === 'money') allPlayers.sort((a, b) => b.money - a.money);
+    else if (topTab === 'taps') allPlayers.sort((a, b) => b.taps - a.taps);
+    else if (topTab === 'time') allPlayers.sort((a, b) => b.timePlayed - a.timePlayed);
+    else if (topTab === 'set') allPlayers.sort((a, b) => b.setValue - a.setValue);
+
+    return allPlayers;
+}
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `${h}ч ${m}м`;
+    return `${m}м`;
+}
+
+function setShopFilter(f) { shopFilter = f; shopLimit = 20; view(); }
 function onSearchInput(val) {
     searchQuery = val;
     shopLimit = 20;
-    // Обновляем только список товаров, без перерисовки всей страницы (чтобы клавиатура не закрывалась)
     const displayItems = getFilteredItems();
     const container = document.getElementById('shop-items');
-    if (container) {
-        container.innerHTML = renderShopItems(displayItems);
-    }
+    if (container) container.innerHTML = renderShopItems(displayItems);
 }
 
 function getFilteredItems() {
@@ -356,8 +400,6 @@ function view(){
      </div>`;
  } else if(tab==='shop'){
   h = '<h3 style="margin-top:0">Дрип Шоп</h3>';
-  
-  // Поле поиска и фильтры
   h += '<div class="shop-controls">';
   h += `<input type="text" id="shop-search" class="shop-search" placeholder="🔍 Поиск (например: часы, худи, Gucci...)" value="${searchQuery}" oninput="onSearchInput(this.value)" autocomplete="off">`;
   h += '<div class="shop-filters">';
@@ -366,7 +408,6 @@ function view(){
   }
   h += '</div></div>';
 
-  // Контейнер для товаров
   const displayItems = getFilteredItems();
   h += `<div id="shop-items">${renderShopItems(displayItems)}</div>`;
 
@@ -438,18 +479,32 @@ function view(){
   h+=`</div>`;
   
  } else if(tab==='top'){
-  const invValue = Object.keys(S.own).reduce((sum, id) => sum + (IM[id] ? IM[id].p : 0), 0);
-  h=`<h3 style="margin-top:0">Топ Дрипперов</h3>
-     <p style="color:var(--mut);font-size:12px;margin-bottom:15px;">Рейтинг по общему флексу</p>
-     
-     <div class="card"><div class="ic">🥇</div><div class="t"><b>@mega_drip</b><small>Стенд: 999,999 ₽</small></div><b style="color:var(--ac)">5M ₽</b></div>
-     <div class="card"><div class="ic">🥈</div><div class="t"><b>@trap_star</b><small>Стенд: 850,000 ₽</small></div><b style="color:var(--ac)">3M ₽</b></div>
-     <div class="card"><div class="ic">🥉</div><div class="t"><b>@young_thug</b><small>Стенд: 500,000 ₽</small></div><b style="color:var(--ac)">1.5M ₽</b></div>
-     
-     <h4 style="margin:20px 0 10px;color:var(--mut);">Твоя статистика</h4>
-     <div class="card"><div class="t"><b>Баланс</b></div><b style="color:var(--ac)">${fmt(S.r)} ₽</b></div>
-     <div class="card"><div class="t"><b>Цена всех вещей</b><small>Общая стоимость инвентаря</small></div><b style="color:var(--ac)">${fmt(invValue)} ₽</b></div>
-     <div class="card"><div class="t"><b>Цена вещей на стенде</b><small>Бонус к доходу</small></div><b style="color:var(--ac2)">${fmt(getStandValue())} ₽</b></div>`;
+  h=`<h3 style="margin-top:0">Топ Дрипперов</h3>`;
+  
+  // Вкладки топа
+  h += `<div class="top-tabs">
+      <button class="top-tab ${topTab === 'money' ? 'on' : ''}" onclick="setTopTab('money')">💰 Деньги</button>
+      <button class="top-tab ${topTab === 'taps' ? 'on' : ''}" onclick="setTopTab('taps')">👆 Клики</button>
+      <button class="top-tab ${topTab === 'time' ? 'on' : ''}" onclick="setTopTab('time')">⏱ Время</button>
+      <button class="top-tab ${topTab === 'set' ? 'on' : ''}" onclick="setTopTab('set')">👕 Лучший Сет</button>
+  </div>`;
+
+  // Список игроков
+  const list = getTopList();
+  h += list.map((p, idx) => {
+      let val = '';
+      if (topTab === 'money') val = fmt(p.money) + ' ₽';
+      else if (topTab === 'taps') val = fmt(p.taps) + ' раз';
+      else if (topTab === 'time') val = formatTime(p.timePlayed);
+      else if (topTab === 'set') val = fmt(p.setValue) + ' ₽';
+
+      return `<div class="top-row ${p.isMe ? 'me' : ''}">
+          <div class="pos">${idx + 1}</div>
+          <div class="name">${p.name}</div>
+          <div class="val">${val}</div>
+      </div>`;
+  }).join('');
+
  } else if(tab==='settings'){
   const usedCount = S.promos ? Object.keys(S.promos).length : 0;
   h=`<h3 style="margin-top:0">Настройки</h3>
@@ -494,14 +549,15 @@ function view(){
  }
  m.innerHTML=h;
  
- // Восстанавливаем скролл (только если не в поиске)
  if (tab !== 'shop' || !searchQuery) {
     $('main').scrollTop = scrollPos; 
  }
  
  if(tab==='tap'){
     $('tap').addEventListener('pointerdown',()=>{
-        S.r += getTapValue(); save(); head();
+        S.r += getTapValue(); 
+        S.taps++; // Считаем тапы
+        save(); head();
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     });
  }
@@ -523,7 +579,6 @@ function buy(id){
     const item = ITEMS.find(x=>x.id===id);
     if(S.r >= item.p){
         S.r -= item.p; S.own[id] = 1; save(); head(); 
-        // Не перерисовываем весь экран, чтобы поиск не сбрасывался
         const displayItems = getFilteredItems();
         const container = document.getElementById('shop-items');
         if (container) container.innerHTML = renderShopItems(displayItems);
@@ -568,12 +623,15 @@ $('nav').addEventListener('click',e=>{
     view();
 });
 
+// Таймер для времени в игре
 setInterval(() => {
     if (S.autoLvl > 0) {
         S.r += getAutoValue();
         head();
     }
+    S.timePlayed++; // +1 секунда к времени игры
 }, 1000);
+
 setInterval(save, 5000);
 
 head(); view();
