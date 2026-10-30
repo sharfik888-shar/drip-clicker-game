@@ -50,7 +50,8 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .mannequin-wrapper {position: relative;width: 160px;height: 340px;margin-bottom: 20px;z-index: 2;}
 .mannequin-base {width: 100%;height: 100%;display: block;}
 
-.eq-item {position: absolute;width: 100px;height: 100px;filter: drop-shadow(0 5px 10px rgba(0,0,0,0.6));pointer-events: none;}
+/* УВЕЛИЧЕННЫЕ ВЕЩИ */
+.eq-item {position: absolute;width: 100px;height: 100px;transform-origin: center center;filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));pointer-events: none;}
 .eq-item svg {width: 100%;height: 100%;}
 
 .slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:0.2s;}
@@ -89,6 +90,10 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 .contact-link span {font-weight:700; font-size:14px;}
 .contact-link small {color:var(--mut); font-size:12px;}
 .tg-username {color:var(--ac); font-weight:900;}
+
+/* ПЛАШКА ДЛЯ АУДИО */
+.audio-toast {position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--card); border:1px solid var(--ac); color:var(--ac); padding:10px 20px; border-radius:20px; font-weight:bold; z-index:1000; display:none; animation: slideDown 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+@keyframes slideDown { from { transform:translate(-50%, -100%); } to { transform:translate(-50%, 0); } }
 </style>
 </head>
 <body>
@@ -96,6 +101,8 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 <audio id="bg-music" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
+
+<div id="audio-toast" class="audio-toast" onclick="forcePlayMusic()">🔊 Нажми, чтобы включить звук</div>
 
 <div id="app">
  <header>
@@ -130,7 +137,7 @@ if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
 
-// --- МУЗЫКА ---
+// --- МУЗЫКА (ПРИНУДИТЕЛЬНЫЙ СТАРТ) ---
 const bgMusic = document.getElementById('bg-music');
 let musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
 let musicVolume = parseInt(localStorage.getItem('musicVol') || '40');
@@ -138,17 +145,24 @@ bgMusic.volume = musicVolume / 100;
 let musicPlaying = false;
 let musicInitialized = false;
 
-document.body.addEventListener('pointerdown', () => {
+function forcePlayMusic() {
     if (!musicInitialized) {
         musicInitialized = true;
         if (musicEnabled) {
             bgMusic.play().then(() => {
                 musicPlaying = true;
                 updateMusicUI();
-            }).catch(e => console.log("Autoplay blocked"));
+                $('audio-toast').style.display = 'none';
+            }).catch(e => {
+                $('audio-toast').style.display = 'block';
+            });
         }
     }
-});
+}
+
+// Вешаем на любые действия пользователя, чтобы браузер пропустил звук
+document.body.addEventListener('pointerdown', forcePlayMusic);
+document.body.addEventListener('touchstart', forcePlayMusic);
 
 function toggleMusic() {
     if (bgMusic.paused) { bgMusic.play(); musicPlaying = true; musicEnabled = true; }
@@ -221,8 +235,8 @@ function artSpan(i, noBg = false) {
 }
 
 let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
-try { const x = localStorage.getItem('drip8'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
-const save = () => { try { localStorage.setItem('drip8', JSON.stringify(S)); } catch(e) {} };
+try { const x = localStorage.getItem('drip9'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
+const save = () => { try { localStorage.setItem('drip9', JSON.stringify(S)); } catch(e) {} };
 
 const getStandValue = () => Object.values(S.eq).reduce((sum, id) => sum + (id && IM[id] ? IM[id].p : 0), 0);
 const getStandBonus = () => 1 + (getStandValue() / 50000);
@@ -235,16 +249,16 @@ const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 
-// ИДЕАЛЬНЫЕ КООРДИНАТЫ (ЦЕНТР + МАСШТАБ)
+// ИДЕАЛЬНЫЕ КООРДИНАТЫ (УВЕЛИЧЕН МАСШТАБ)
 const EQ_POS = {
-    head: { top: '14%', left: '50%', scale: 0.55, z: 6 },
-    neck: { top: '28%', left: '50%', scale: 0.35, z: 5 },
-    top: { top: '43%', left: '50%', scale: 0.85, z: 3 },
-    bot: { top: '66%', left: '50%', scale: 0.85, z: 2 },
-    shoe: { top: '88%', left: '50%', scale: 0.65, z: 2 },
-    wrist: { top: '52%', left: '13%', scale: 0.25, z: 7 },
-    back: { top: '40%', left: '15%', scale: 0.65, z: 1 },
-    waist: { top: '52%', left: '50%', scale: 0.45, z: 4 }
+    head: { top: '11%', left: '50%', scale: 1.1, z: 6 },   // Кепка на всю голову
+    neck: { top: '23%', left: '50%', scale: 0.6, z: 5 },   // Цепь на шею
+    top: { top: '33%', left: '50%', scale: 2.0, z: 3 },    // Худи на весь торс
+    bot: { top: '68%', left: '50%', scale: 1.8, z: 2 },    // Штаны на все ноги
+    shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 },   // Кроссовки на ступни
+    wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 },  // Часы на руку
+    back: { top: '35%', left: '12%', scale: 1.5, z: 1 },   // Сумка за спиной
+    waist: { top: '49%', left: '50%', scale: 1.2, z: 4 }   // Ремень на пояс
 };
 
 const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100000 }, 'DRIL': { r: 75000 }, 'DRIP': { r: 30000 }, 'USA': { r: 150000 } };
@@ -265,7 +279,7 @@ function applyPromo() {
 
 function resetGame() {
     if (confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) {
-        localStorage.removeItem('drip8');
+        localStorage.removeItem('drip9');
         S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
         save(); head(); view();
     }
