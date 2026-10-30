@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>DRIP FITS: GLOBAL 26</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{color-scheme:dark;--bg:#09090b;--card:rgba(30,30,40,0.85);--card-border:rgba(255,255,255,0.1);--fg:#f4f4f6;--mut:#8b8b99;--ac:#b6ff3c;--ac2:#ff3cac;--blur:blur(12px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
@@ -14,15 +15,12 @@ header{padding:20px 16px 10px;text-align:center;position:relative;z-index:15;fle
 #bal{font-size:38px;font-weight:900;color:var(--ac);letter-spacing:.5px;text-shadow:0 0 15px rgba(182,255,60,.3)}
 #sub{font-size:12px;color:var(--mut);margin-top:4px;font-weight:bold;}
 #rank{display:inline-block;margin-top:8px;padding:6px 14px;border-radius:20px;background:var(--card);border:1px solid var(--card-border);backdrop-filter:var(--blur);font-size:13px;font-weight:700;color:var(--ac2)}
-
 main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:10px 14px 80px;position:relative;z-index:10}
 main::-webkit-scrollbar{display:none}
-
 nav{display:flex;gap:4px;padding:10px 6px;background:rgba(20,20,25,0.95);backdrop-filter:var(--blur);border-top:1px solid var(--card-border);justify-content:space-between;position:absolute;bottom:0;left:0;right:0;z-index:20;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 nav button{flex:1;min-width:0;padding:8px 0;border:0;border-radius:14px;background:transparent;color:var(--mut);font-weight:700;font-size:9px;transition:.2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;}
 nav button.on{background:var(--card);border:1px solid var(--card-border);color:var(--ac);box-shadow:0 0 15px rgba(182,255,60,0.1)}
 nav svg{width:18px;height:18px;fill:currentColor;}
-
 .card{background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--card-border);border-radius:18px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:.2s}
 .ic{width:52px;height:52px;border-radius:14px;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none;overflow:hidden;border:1px solid rgba(255,255,255,0.05)}
 .card .t{flex:1;min-width:0}.card b{display:block;font-size:15px;line-height:1.2;margin-bottom:4px;}.card small{color:var(--mut);font-size:12px}
@@ -30,35 +28,26 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .btn.pri{background:var(--ac);color:#10130a;box-shadow:0 0 20px rgba(182,255,60,0.3);border:0}
 .btn.pk{background:var(--ac2);color:#fff;box-shadow:0 0 20px rgba(255,60,172,0.3);border:0}
 .btn:disabled{opacity:0.5;filter:grayscale(1);cursor:not-allowed;}
-
 #tapw{display:flex;flex-direction:column;align-items:center;padding-top:10px}
 #tap{width:200px;height:200px;border-radius:50%;border:4px solid rgba(255,255,255,0.1);background:radial-gradient(circle at 35% 30%,#d6ff7a,var(--ac) 55%,#6aa010);color:#10130a;box-shadow:0 0 60px rgba(182,255,60,.4);transition:transform .06s;position:relative;touch-action:manipulation;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 #tap:active{transform:scale(.92)}
 #tap svg{width:90px;height:90px;filter:drop-shadow(0 10px 10px rgba(0,0,0,0.3));}
 .tap-val{font-size:24px;font-weight:900;margin-top:15px;color:var(--ac);text-align:center;}
-
 .upgrades {width:100%;margin-top:20px;}
 .up-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
 .up-card-info b{font-size:16px;display:block;margin-bottom:4px;}
 .up-card-info small{color:var(--mut);font-size:12px;}
-
-/* СТЕНД */
 .stand-container {position: relative;width: 100%;height: 440px;background: radial-gradient(circle at 50% 30%, #1a1a24 0%, #09090b 80%);border-radius: 24px;border: 1px solid var(--card-border);margin-bottom: 15px;display: flex;justify-content: center;align-items: flex-end;overflow: hidden;box-shadow: inset 0 0 50px rgba(0,0,0,0.8);}
 .stand-spotlight {position: absolute;top: 10%;width: 180px;height: 180px;background: var(--ac);filter: blur(90px);opacity: 0.15;border-radius: 50%;}
 .stand-podium {position: absolute;bottom: 15px;width: 220px;height: 30px;background: linear-gradient(to bottom, #222, #111);border-radius: 50%;border-bottom: 2px solid #333;box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 20px rgba(182,255,60,0.15);}
-
 .mannequin-wrapper {position: relative;width: 160px;height: 340px;margin-bottom: 20px;z-index: 2;}
 .mannequin-base {width: 100%;height: 100%;display: block;}
-
 .eq-item {position: absolute;width: 100px;height: 100px;transform-origin: center center;filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));pointer-events: none;}
 .eq-item svg {width: 100%;height: 100%;}
-
 .slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:0.2s;}
 .slot-btn:active {transform: scale(0.98);}
 .slot-btn b{font-size:14px;}
 .slot-btn small{color:var(--mut);font-size:12px;margin-left:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
-
-/* УПРАВЛЕНИЕ В ШОПЕ */
 .shop-controls {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
 .shop-search {width: 100%; padding: 14px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--card-border); color: var(--fg); font-size: 15px; outline: none; transition: 0.2s;}
 .shop-search:focus {border-color: var(--ac); box-shadow: 0 0 15px rgba(182,255,60,0.2);}
@@ -66,13 +55,10 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .shop-filters::-webkit-scrollbar {display: none;}
 .filter-btn {padding: 8px 16px;border-radius: 20px;background: var(--card);border: 1px solid var(--card-border);color: var(--mut);font-size: 13px;font-weight: 700;white-space: nowrap;cursor: pointer;transition: 0.2s;}
 .filter-btn.on {background: var(--ac);color: #10130a;border-color: var(--ac);}
-
-/* ТОП */
 .top-tabs {display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none;}
 .top-tabs::-webkit-scrollbar {display: none;}
 .top-tab {padding: 10px 16px; border-radius: 20px; background: var(--card); border: 1px solid var(--card-border); color: var(--mut); font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap;}
 .top-tab.on {background: var(--ac2); color: #fff; border-color: var(--ac2); box-shadow: 0 0 15px rgba(255,60,172,0.3);}
-
 .top-row {display: flex; align-items: center; gap: 12px; background: var(--card); padding: 12px 16px; border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--card-border);}
 .top-row.me {border-color: var(--ac); background: rgba(182,255,60,0.1);}
 .top-row .pos {font-size: 16px; font-weight: 900; color: var(--mut); width: 25px; text-align: center;}
@@ -80,14 +66,12 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .top-row .name {flex: 1; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .top-row .val {font-weight: 900; font-size: 14px; color: var(--ac);}
 .top-row.me .val {color: var(--ac); text-shadow: 0 0 10px rgba(182,255,60,0.3);}
-
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:100;display:none;flex-direction:column;justify-content:flex-end;}
 .modal.open{display:flex;}
 .modal-content{background:var(--bg);border-top-left-radius:24px;border-top-right-radius:24px;max-height:75vh;overflow-y:auto;padding:20px;border-top:1px solid var(--card-border);animation: slideUp 0.3s ease;}
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;position:sticky;top:0;background:var(--bg);padding-bottom:10px;z-index:2;}
 .modal-header h3{margin:0;}
-
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .cell{background:var(--card);border-radius:14px;padding:10px 4px;text-align:center;font-size:11px;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:0.2s;}
 .cell:active{transform:scale(0.95);}
@@ -95,12 +79,10 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .cell .artw{width:60px;height:60px;}
 .artw{display:block;width:100%;height:100%;}
 .artw svg{width:100%;height:100%;display:block;}
-
 input[type=range] {-webkit-appearance: none;width: 100%;height: 6px;background: rgba(255,255,255,0.1);border-radius: 3px;outline: none;}
 input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;height: 22px;background: var(--ac);border-radius: 50%;cursor: pointer;box-shadow: 0 0 10px rgba(182,255,60,0.5);border: 2px solid #10130a;}
 .promo-inp {flex: 1;padding: 12px;border-radius: 10px;border: 1px solid var(--card-border);background: rgba(0,0,0,0.5);color: var(--fg);font-size: 14px;outline: none;text-transform: uppercase;font-weight: 700;letter-spacing: 1px;}
 .promo-inp:focus {border-color: var(--ac);}
-
 .contact-link {display:flex; justify-content:space-between; align-items:center; padding:12px 0; text-decoration:none; color:var(--fg); border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s;}
 .contact-link:last-child {border-bottom:none;}
 .contact-link:active {opacity:0.7;}
@@ -110,11 +92,7 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 </style>
 </head>
 <body>
-
-<audio id="bg-music" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
-
+<audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
 <div id="app">
  <header>
   <div id="bal">0 ₽</div>
@@ -131,7 +109,6 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
   <button data-t="settings"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>Настр.</button>
  </nav>
 </div>
-
 <div class="modal" id="select-modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -141,31 +118,25 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
         <div id="modal-list" class="grid"></div>
     </div>
 </div>
-
 <script>
+// ТВОИ ДАННЫЕ ИЗ SUPABASE
+const SUPABASE_URL = "https://insflwxculpciwwcfplc.supabase.co"; 
+const SUPABASE_ANON_KEY = "sb_publishable_sjXSiT-ZE03BQptllpdzvg_sO8Ihgs-";
+
+const { createClient } = supabase;
+const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const tg=window.Telegram&&window.Telegram.WebApp;
 if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
-
-// --- МУЗЫКА ---
+let myName = 'Ты';
+try { if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) { myName = tg.initDataUnsafe.user.username ? '@' + tg.initDataUnsafe.user.username : tg.initDataUnsafe.user.first_name; } } catch(e) {}
 const bgMusic = document.getElementById('bg-music');
 let musicVolume = parseInt(localStorage.getItem('musicVol') || '40');
 bgMusic.volume = musicVolume / 100;
 function startMusic() { if (bgMusic.paused) bgMusic.play().catch(e => {}); }
-document.addEventListener('pointerdown', startMusic);
-document.addEventListener('touchstart', startMusic, {passive: true});
-document.addEventListener('click', startMusic);
-
-function setVolume(val) {
-    musicVolume = parseInt(val);
-    bgMusic.volume = musicVolume / 100;
-    localStorage.setItem('musicVol', musicVolume);
-    const lbl = document.getElementById('vol-label');
-    if (lbl) lbl.textContent = musicVolume + '%';
-}
-
-// --- ГЕНЕРАЦИЯ ВЕЩЕЙ ---
+document.addEventListener('pointerdown', startMusic); document.addEventListener('touchstart', startMusic, {passive: true}); document.addEventListener('click', startMusic);
+function setVolume(val) { musicVolume = parseInt(val); bgMusic.volume = musicVolume / 100; localStorage.setItem('musicVol', musicVolume); const lbl = document.getElementById('vol-label'); if (lbl) lbl.textContent = musicVolume + '%'; }
 const ART={ cap:"<path d='M20 58 Q22 28 50 28 Q78 28 80 58Z' fill='#3a7bd5'/><path d='M62 56 Q92 54 92 66 L60 66Z' fill='#2a5aa0'/><rect x='20' y='56' width='62' height='5' fill='#1f3f73'/><circle cx='50' cy='28' r='3' fill='#fff'/>", cargo:"<path d='M30 15H70L76 85H55L50 40L45 85H24Z' fill='#6b705c'/><rect x='30' y='15' width='40' height='7' fill='#4d513f'/><rect x='28' y='50' width='14' height='14' fill='#555a47'/><rect x='58' y='50' width='14' height='14' fill='#555a47'/>", hood:"<path d='M34 20Q50 8 66 20L90 40L80 52L72 46V86H28V46L20 52L10 40Z' fill='#5a5a64'/><path d='M38 20Q50 34 62 20Q50 12 38 20Z' fill='#222'/><rect x='36' y='62' width='28' height='16' fill='#46464e'/><path d='M45 32V50M55 32V50' stroke='#ddd' stroke-width='2'/>", bag:"<path d='M18 40Q50 0 82 40' stroke='#444' stroke-width='5' fill='none'/><rect x='22' y='38' width='56' height='42' rx='6' fill='#222'/><path d='M22 50H78L50 62Z' fill='#333'/><rect x='46' y='58' width='8' height='8' rx='2' fill='#b6ff3c'/>", sneak:"<path d='M12 62V45Q30 44 38 34L50 44Q70 46 90 60V72H12Z' fill='#eee'/><rect x='12' y='68' width='78' height='9' rx='3' fill='#b6ff3c'/><path d='M38 34L50 44M44 40L52 36M50 44L58 40' stroke='#999' stroke-width='2' fill='none'/><path d='M12 62Q40 58 90 62' stroke='#ff3cac' stroke-width='3' fill='none'/>", chain:"<path d='M22 20Q50 90 78 20' stroke='#ffd34d' stroke-width='6' stroke-dasharray='9 3' fill='none' stroke-linecap='round'/><rect x='40' y='52' width='20' height='20' rx='4' fill='#ffd34d' transform='rotate(45 50 62)'/><circle cx='50' cy='62' r='4' fill='#fff'/>", shades:"<rect x='12' y='38' width='34' height='22' rx='8' fill='#111'/><rect x='54' y='38' width='34' height='22' rx='8' fill='#111'/><rect x='44' y='42' width='12' height='5' fill='#111'/><path d='M18 42L30 56M60 42L72 56' stroke='#666' stroke-width='3'/><path d='M12 42L4 38M88 42L96 38' stroke='#111' stroke-width='4'/>", mask:"<path d='M50 12Q80 12 80 48Q80 80 66 90H34Q20 80 20 48Q20 12 50 12Z' fill='#202024'/><rect x='28' y='36' width='44' height='14' rx='7' fill='#e8c9a0'/><circle cx='40' cy='43' r='3' fill='#111'/><circle cx='60' cy='43' r='3' fill='#111'/>", puff:"<path d='M34 16H66L90 40L84 72H72V86H28V72H16L10 40Z' fill='#6fc3f5'/><path d='M28 36H72M28 50H72M28 64H72' stroke='#3a8cc0' stroke-width='3'/><path d='M50 16V86' stroke='#2a6c98' stroke-width='3'/>", pack:"<rect x='25' y='14' width='50' height='72' rx='16' fill='#c0392b'/><rect x='33' y='48' width='34' height='26' rx='6' fill='#962d22'/><path d='M33 32H67' stroke='#fff' stroke-width='3'/><rect x='45' y='56' width='10' height='5' fill='#ffd34d'/><path d='M38 14Q50 2 62 14' stroke='#962d22' stroke-width='5' fill='none'/>", jack:"<path d='M34 16H66L90 40L84 76H72V88H28V76H16L10 40Z' fill='#2b2118'/><path d='M34 16L50 44L66 16Z' fill='#4a3a2b'/><path d='M50 44V88' stroke='#8a6a4a' stroke-width='2'/><rect x='60' y='56' width='10' height='3' fill='#aaa'/>", grillz:"<rect x='14' y='38' width='72' height='26' rx='12' fill='#a8322a'/><g fill='#ffd34d' stroke='#b8860b'><rect x='22' y='42' width='9' height='14' rx='3'/><rect x='31' y='42' width='9' height='14' rx='3'/><rect x='40' y='42' width='9' height='14' rx='3'/><rect x='49' y='42' width='9' height='14' rx='3'/><rect x='58' y='42' width='9' height='14' rx='3'/><rect x='67' y='42' width='9' height='14' rx='3'/></g><path d='M80 18L82 26L90 28L82 30L80 38L78 30L70 28L78 26Z' fill='#fff'/>", drill:"<path d='M12 62V45Q30 44 38 34L50 44Q70 46 90 60V72H12Z' fill='#16161a'/><rect x='12' y='68' width='78' height='9' rx='3' fill='#ff4a1c'/><path d='M60 52Q66 38 70 30Q72 42 80 48Q76 58 66 58Z' fill='#ff9a1c'/><path d='M12 62Q40 58 90 62' stroke='#ff4a1c' stroke-width='3' fill='none'/>", tee:"<path d='M30 20 L50 20 L70 20 L90 40 L80 50 L75 45 V85 H25 V45 L20 50 L10 40 Z' fill='#e8e8ee'/>", jeans:"<path d='M30 15H70L76 85H55L50 40L45 85H24Z' fill='#3d5a8a'/><rect x='30' y='15' width='40' height='7' fill='#2a4266'/>", watch:"<circle cx='50' cy='50' r='25' fill='#222'/><circle cx='50' cy='50' r='20' fill='#111' stroke='#ffd34d' stroke-width='2'/><path d='M50 35 V50 L60 55' stroke='#fff' stroke-width='3' fill='none' stroke-linecap='round'/><rect x='40' y='5' width='20' height='15' rx='3' fill='#333'/><rect x='40' y='80' width='20' height='15' rx='3' fill='#333'/>", belt:"<rect x='10' y='40' width='80' height='20' rx='5' fill='#333'/><rect x='40' y='30' width='20' height='40' rx='3' fill='#ffd34d'/><rect x='45' y='35' width='10' height='30' rx='2' fill='#222'/>", socks:"<path d='M20 20 H40 V60 Q40 80 20 80 H10 V20 Z' fill='#eee'/><rect x='20' y='20' width='20' height='10' fill='#333'/><path d='M60 20 H80 V60 Q80 80 60 80 H50 V20 Z' fill='#eee'/><rect x='60' y='20' width='20' height='10' fill='#333'/>", boxers:"<path d='M20 20 H80 L70 60 H55 L50 45 L45 60 H30 Z' fill='#222'/><path d='M20 20 H80 V30 H20 Z' fill='#333'/>" };
 const MAIN={cap:'#3a7bd5',cargo:'#6b705c',hood:'#5a5a64',bag:'#222',sneak:'#eee',chain:'#ffd34d',shades:'#111',mask:'#202024',puff:'#6fc3f5',pack:'#c0392b',jack:'#2b2118',tee:'#e8e8ee',jeans:'#3d5a8a',watch:'#333',belt:'#333',socks:'#eee',boxers:'#222'};
 const ACC={sneak:'#b6ff3c',bag:'#b6ff3c',pack:'#ffd34d',jeans:'#ffd34d'};
@@ -174,466 +145,109 @@ const COL=[['чёрн','#1c1c22'],['бел','#f0f0f4'],['красн','#d8322b'],
 const STY=['Тень','Район','Метель','Бетон','Асфальт','Квартал','Рейд','Лёд','Ночь','Дым','Огонь','Волна','Король','Пантера','Туман','Гром','Стрит','Сокол','Тайфун','Мафия','Космос','Байкер','Дрифт','Буря','Неон','Мираж','Кобра','Вираж','Закат','Орбита','Фантом','Призрак','Хаос','Легенда','Миф','Элита','Вихрь','Бездна','Свет','Пламя','Ветер','Гроза','Молния','Сталь','Камень','Песок','Звезда','Луна','Солнце','Тень-2','Кибер','Хакер','Глитч','Пиксель','Ретро','Винтаж','Стиль','Мода','Тренд','Люкс','Премиум','Эконом','Спорт','Кэжуал','Смарт','Классика','Футуризм','Авангард','Минимализм','Максимализм','Эклектика','Бохо','Гранж','Панк','Хип-хоп','Рэп','Джаз','Блюз','Рок','Метал','Инди','Поп','Хаус','Техно'];
 const BR=[['Dior','D',3,20],['Balenciaga','B',3,20],['Gucci','G',2.8,20],['Louis Vuitton','LV',3.5,22],['Prada','P',2.6,20],['Versace','V',2.4,18],['Fendi','F',2.4,18],['Burberry','BB',2.2,16],['Moncler','M',2.6,18],['Off-White','OW',1.8,10],['Supreme','S',1.7,10],['Stone Island','SI',1.8,10],['Chrome Hearts','CH',2.2,12],['Palm Angels','PA',1.7,10],['Rick Owens','RO',2,12],['Fear of God','FG',1.8,10],['Nike','N',1.2,4],['Adidas','A',1.2,4],['Stüssy','ST',1.1,4],['Bape','BA',1.3,5],['Rolex','R',3.2,20],['Patek Philippe','PP',4,24],['Audemars Piguet','AP',3.8,22],['Richard Mille','RM',4.5,26],['Omega','O',2.4,16],['Cartier','CA',3,20],['Tag Heuer','TH',2,12],['Casio','C',1,0],['G-Shock','GS',1.1,2],['Seiko','SE',1.2,4]];
 const BP={cap:[50,44],cargo:[38,34],hood:[50,52],bag:[50,50],sneak:[64,56],mask:[50,70],puff:[38,32],pack:[50,40],jack:[38,36],tee:[50,46],jeans:[60,32],belt:[50,50],socks:[50,50],boxers:[50,50]};
-
 function hs(n){let x=((n+1)*2654435761)>>>0;x^=x>>>15;x=Math.imul(x,2246822519)>>>0;x^=x>>>13;return x>>>0}
-
 let ITEMS=[];
-(function(){
-    const MU=[1,2.2,5,12],EN={m:'ый',f:'ая',n:'ое',p:'ые'};let n=0;
-    for(const t of TY){
-        for(const c of COL){
-            for(const s of STY){
-                const W=t[0][0]==='w',h=hs(n);
-                const bi=W?20+(h>>>12)%10:((h>>>12)%30);
-                const B=bi>=0?BR[bi]:null;
-                const q=h%100+(B?B[3]:-8),r=q<58?0:q<84?1:q<96?2:3;
-                let k=(h>>>16)%15;
-                if(COL[k][1]===c[1])k=(k+5)%15;
-                ITEMS.push({
-                    id:'g'+n,g:1,t:t[0],c1:c[1],c2:COL[k][1],pt:(h%7<2)?0:1+(h>>>5)%6,bi,
-                    fl:(h>>>9)&1,rt:((h>>>10)%13)-6,sc:.92+((h>>>14)%14)/100,r,
-                    p:Math.round(t[3]*MU[r]*(B?B[2]:.8)*(.8+((h>>>8)%40)/100)/10)*10,
-                    n:t[1]+(B?' '+B[0]:'')+' «'+s+'» '+c[0]+EN[t[2]]
-                });
-                n++;
-            }
-        }
-    }
-})();
+(function(){ const MU=[1,2.2,5,12],EN={m:'ый',f:'ая',n:'ое',p:'ые'};let n=0;
+    for(const t of TY){ for(const c of COL){ for(const s of STY){
+                const W=t[0][0]==='w',h=hs(n); const bi=W?20+(h>>>12)%10:((h>>>12)%30); const B=bi>=0?BR[bi]:null;
+                const q=h%100+(B?B[3]:-8),r=q<58?0:q<84?1:q<96?2:3; let k=(h>>>16)%15; if(COL[k][1]===c[1])k=(k+5)%15;
+                ITEMS.push({ id:'g'+n,g:1,t:t[0],c1:c[1],c2:COL[k][1],pt:(h%7<2)?0:1+(h>>>5)%6,bi, fl:(h>>>9)&1,rt:((h>>>10)%13)-6,sc:.92+((h>>>14)%14)/100,r, p:Math.round(t[3]*MU[r]*(B?B[2]:.8)*(.8+((h>>>8)%40)/100)/10)*10, n:t[1]+(B?' '+B[0]:'')+' «'+s+'» '+c[0]+EN[t[2]] });
+                n++; } } } })();
 const IM = {}; ITEMS.forEach(i => IM[i.id] = i);
-
 function artSpan(i, noBg = false) {
     const id='a'+i.id, fx=i.fl?-1:1, pt=(['chain','shades'].includes(i.t)||i.t[0]==='w')?0:i.pt;
     const D={ 1:"<pattern id='"+id+"p' width='12' height='12' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><rect width='12' height='12' fill='"+i.c1+"'/><rect width='5' height='12' fill='"+i.c2+"'/></pattern>", 2:"<pattern id='"+id+"p' width='14' height='14' patternUnits='userSpaceOnUse'><rect width='14' height='14' fill='"+i.c1+"'/><circle cx='7' cy='7' r='3' fill='"+i.c2+"'/></pattern>", 3:"<pattern id='"+id+"p' width='20' height='20' patternUnits='userSpaceOnUse'><rect width='20' height='20' fill='"+i.c1+"'/><rect width='10' height='10' fill='"+i.c2+"'/><rect x='10' y='10' width='10' height='10' fill='"+i.c2+"'/></pattern>", 4:"<pattern id='"+id+"p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='"+i.c1+"'/><ellipse cx='8' cy='9' rx='9' ry='5' fill='"+i.c2+"' opacity='.75'/><ellipse cx='23' cy='22' rx='8' ry='6' fill='"+i.c2+"' opacity='.75'/></pattern>", 5:"<linearGradient id='"+id+"p' x1='0' x2='1' y1='0' y2='0'><stop offset='.5' stop-color='"+i.c1+"'/><stop offset='.5' stop-color='"+i.c2+"'/></linearGradient>", 6:"<linearGradient id='"+id+"p' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='"+i.c1+"'/><stop offset='1' stop-color='"+i.c2+"'/></linearGradient>" };
-    let art=ART[i.t].split(MAIN[i.t]).join(pt?"url(#"+id+"p)":i.c1);
-    if(ACC[i.t])art=art.split(ACC[i.t]).join(i.c2);
-    const bg = noBg ? 'transparent' : ['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r];
-    const rc = noBg ? '' : ['','','#b36bff','#ffb02e'][i.r];
+    let art=ART[i.t].split(MAIN[i.t]).join(pt?"url(#"+id+"p)":i.c1); if(ACC[i.t])art=art.split(ACC[i.t]).join(i.c2);
+    const bg = noBg ? 'transparent' : ['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r]; const rc = noBg ? '' : ['','','#b36bff','#ffb02e'][i.r];
     const bp=BP[i.t],bd=i.bi!==undefined&&bp?"<circle cx='"+bp[0]+"' cy='"+bp[1]+"' r='8' fill='#111' stroke='#fff' stroke-width='1.2'/><text transform='translate("+bp[0]+" "+(bp[1]+3)+") scale("+fx+" 1)' text-anchor='middle' font-size='"+(BR[i.bi][1].length>1?7:9)+"' font-weight='900' fill='#fff' font-family='Arial,sans-serif'>"+BR[i.bi][1]+"</text>":'';
     return `<span class='artw'><svg viewBox='0 0 100 100'><defs>${D[pt]||''}</defs>${noBg?'':`<rect width='100' height='100' fill='${bg}'/>`}<g transform='translate(50 50) rotate(${i.rt}) scale(${fx*i.sc} ${i.sc}) translate(-50 -50)'>${art}${bd}</g>${rc?`<rect x='1.5' y='1.5' width='97' height='97' rx='8' fill='none' stroke='${rc}' stroke-width='3'/>`:''}</svg></span>`;
 }
-
-// СТЕЙТ (Добавлены тапы и время)
 let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {}, taps: 0, timePlayed: 0 };
-try { const x = localStorage.getItem('drip10'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
-const save = () => { try { localStorage.setItem('drip10', JSON.stringify(S)); } catch(e) {} };
-
+try { const x = localStorage.getItem('drip12'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
+const save = () => { try { localStorage.setItem('drip12', JSON.stringify(S)); } catch(e) {} };
 const getStandValue = () => Object.values(S.eq).reduce((sum, id) => sum + (id && IM[id] ? IM[id].p : 0), 0);
 const getStandBonus = () => 1 + (getStandValue() / 50000);
-
 const getTapValue = () => Math.floor(10 * S.tapLvl * getStandBonus());
 const getAutoValue = () => Math.floor(S.autoLvl * 15 * getStandBonus());
 const getTapCost = () => Math.floor(100 * Math.pow(1.6, S.tapLvl - 1));
 const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
-
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
+const EQ_POS = { head: { top: '11%', left: '50%', scale: 1.1, z: 6 }, neck: { top: '23%', left: '50%', scale: 0.6, z: 5 }, top: { top: '33%', left: '50%', scale: 2.0, z: 3 }, bot: { top: '68%', left: '50%', scale: 1.8, z: 2 }, shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 }, wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 }, back: { top: '35%', left: '12%', scale: 1.5, z: 1 }, waist: { top: '49%', left: '50%', scale: 1.2, z: 4 } };
 
-const EQ_POS = {
-    head: { top: '11%', left: '50%', scale: 1.1, z: 6 },
-    neck: { top: '23%', left: '50%', scale: 0.6, z: 5 },
-    top: { top: '33%', left: '50%', scale: 2.0, z: 3 },
-    bot: { top: '68%', left: '50%', scale: 1.8, z: 2 },
-    shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 },
-    wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 },
-    back: { top: '35%', left: '12%', scale: 1.5, z: 1 },
-    waist: { top: '49%', left: '50%', scale: 1.2, z: 4 }
+// ПРОМОКОДЫ (ДОБАВЛЕНЫ M0N3SY и RAGOF)
+const PROMOS = { 
+    'JAMBO': { r: 50000 }, 
+    'ITICOV': { r: 25000 }, 
+    '2026': { r: 100000 }, 
+    'DRIL': { r: 75000 }, 
+    'DRIP': { r: 30000 }, 
+    'USA': { r: 150000 },
+    'M0N3SY': { r: 400000 },
+    'RAGOF': { r: 500000 }
 };
-
-const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100000 }, 'DRIL': { r: 75000 }, 'DRIP': { r: 30000 }, 'USA': { r: 150000 } };
 
 function applyPromo() {
-    const input = document.getElementById('promo-input');
-    if (!input) return;
-    const code = input.value.trim().toUpperCase();
-    if (!code) return;
-    if (!S.promos) S.promos = {};
-    if (S.promos[code]) { alert('Этот промокод уже активирован!'); return; }
-    const reward = PROMOS[code];
-    if (!reward) { alert('Неверный промокод ❌'); if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error'); return; }
-    S.r += reward.r; S.promos[code] = true; save(); head(); view();
-    alert(`✅ Промокод ${code} активирован!\n+${fmt(reward.r)} ₽`);
-    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    const input = document.getElementById('promo-input'); if (!input) return; const code = input.value.trim().toUpperCase(); if (!code) return;
+    if (!S.promos) S.promos = {}; if (S.promos[code]) { alert('Этот промокод уже активирован!'); return; }
+    const reward = PROMOS[code]; if (!reward) { alert('Неверный промокод ❌'); if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error'); return; }
+    S.r += reward.r; S.promos[code] = true; save(); head(); view(); alert(`✅ Промокод ${code} активирован!\n+${fmt(reward.r)} ₽`); if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 }
-
-function resetGame() {
-    if (confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) {
-        localStorage.removeItem('drip10');
-        S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {}, taps: 0, timePlayed: 0 };
-        save(); head(); view();
-    }
-}
-
-function head(){
- $('bal').textContent = fmt(S.r) + ' ₽';
- $('sub').textContent = '+' + fmt(getAutoValue()) + ' ₽/сек (x' + getStandBonus().toFixed(2) + ')';
- $('rank').textContent = '🔥 Уличный дриппер';
-}
-
-let tab='tap';
-let shopLimit = 20;
-let invLimit = 20;
-let shopFilter = 'all';
-let searchQuery = '';
-let topTab = 'money'; // Текущая вкладка топа (money, taps, time, set)
-
-const CATEGORIES = {
-    'all': { name: 'Все', types: null },
-    'top': { name: 'Верх', types: ['hood', 'tee', 'puff', 'jack'] },
-    'bot': { name: 'Низ', types: ['jeans', 'cargo', 'boxers'] },
-    'shoe': { name: 'Обувь', types: ['sneak', 'socks'] },
-    'head': { name: 'Голова', types: ['cap', 'mask', 'shades'] },
-    'acc': { name: 'Аксессуары', types: ['chain', 'bag', 'pack', 'watch', 'belt'] }
-};
-
-// ФЕЙКОВЫЕ ИГРОКИ ДЛЯ ТОПА
-const FAKE_PLAYERS = [
-    { name: '@mega_drip', money: 999999, taps: 15000, timePlayed: 86400, setValue: 500000 },
-    { name: '@trap_star', money: 850000, taps: 12000, timePlayed: 72000, setValue: 350000 },
-    { name: '@young_thug', money: 500000, taps: 8000, timePlayed: 50000, setValue: 200000 },
-    { name: '@drill_king', money: 250000, taps: 5000, timePlayed: 30000, setValue: 100000 },
-    { name: '@flex_master', money: 100000, taps: 3000, timePlayed: 15000, setValue: 50000 },
-    { name: '@street_god', money: 50000, taps: 1500, timePlayed: 8000, setValue: 20000 },
-    { name: '@drip_lord', money: 20000, taps: 800, timePlayed: 4000, setValue: 10000 },
-    { name: '@newbie_1', money: 5000, taps: 200, timePlayed: 1000, setValue: 2000 }
-];
-
-function setTopTab(t) {
-    topTab = t;
-    view();
-}
-
+function resetGame() { if (confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) { localStorage.removeItem('drip12'); S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {}, taps: 0, timePlayed: 0 }; save(); head(); view(); } }
+function head(){ $('bal').textContent = fmt(S.r) + ' ₽'; $('sub').textContent = '+' + fmt(getAutoValue()) + ' ₽/сек (x' + getStandBonus().toFixed(2) + ')'; $('rank').textContent = '🔥 Уличный дриппер'; }
+let tab='tap'; let shopLimit = 20; let invLimit = 20; let shopFilter = 'all'; let searchQuery = ''; let topTab = 'money'; let realTopData = []; 
+const CATEGORIES = { 'all': { name: 'Все', types: null }, 'top': { name: 'Верх', types: ['hood', 'tee', 'puff', 'jack'] }, 'bot': { name: 'Низ', types: ['jeans', 'cargo', 'boxers'] }, 'shoe': { name: 'Обувь', types: ['sneak', 'socks'] }, 'head': { name: 'Голова', types: ['cap', 'mask', 'shades'] }, 'acc': { name: 'Аксессуары', types: ['chain', 'bag', 'pack', 'watch', 'belt'] } };
+async function syncWithServer() { if (myName === 'Ты') return; const { error } = await _supabase.from('leaderboard').upsert({ name: myName, money: Math.floor(S.r), taps: S.taps, time_played: S.timePlayed, set_value: getStandValue() }, { onConflict: 'name' }); if (error) console.error('Ошибка синхронизации:', error); }
+async function loadTopFromServer() { const { data, error } = await _supabase.from('leaderboard').select('*').order('money', { ascending: false }).limit(50); if (error) { console.error('Ошибка загрузки:', error); return; } realTopData = data.map(p => ({ name: p.name, money: p.money, taps: p.taps, timePlayed: p.time_played, setValue: p.set_value })); if (tab === 'top') view(); }
+syncWithServer(); loadTopFromServer(); setInterval(syncWithServer, 10000);
+function setTopTab(t) { topTab = t; view(); }
 function getTopList() {
-    const myName = (tg?.initDataUnsafe?.user?.username) ? '@' + tg.initDataUnsafe.user.username : 'Ты';
-    
-    // Добавляем себя в список
-    const allPlayers = [...FAKE_PLAYERS, {
-        name: myName,
-        money: S.r,
-        taps: S.taps,
-        timePlayed: S.timePlayed,
-        setValue: getStandValue(),
-        isMe: true
-    }];
-
-    // Сортировка
-    if (topTab === 'money') allPlayers.sort((a, b) => b.money - a.money);
-    else if (topTab === 'taps') allPlayers.sort((a, b) => b.taps - a.taps);
-    else if (topTab === 'time') allPlayers.sort((a, b) => b.timePlayed - a.timePlayed);
-    else if (topTab === 'set') allPlayers.sort((a, b) => b.setValue - a.setValue);
-
-    return allPlayers;
+    let allPlayers = realTopData.length > 0 ? [...realTopData] : []; const meInList = allPlayers.find(p => p.name === myName);
+    if (!meInList) { allPlayers.push({ name: myName, money: Math.floor(S.r), taps: S.taps, timePlayed: S.timePlayed, setValue: getStandValue() }); } else { meInList.money = Math.floor(S.r); meInList.taps = S.taps; meInList.timePlayed = S.timePlayed; meInList.setValue = getStandValue(); }
+    if (topTab === 'money') allPlayers.sort((a, b) => b.money - a.money); else if (topTab === 'taps') allPlayers.sort((a, b) => b.taps - a.taps); else if (topTab === 'time') allPlayers.sort((a, b) => b.timePlayed - a.timePlayed); else if (topTab === 'set') allPlayers.sort((a, b) => b.setValue - a.setValue);
+    return allPlayers.map(p => ({ ...p, isMe: p.name === myName }));
 }
-
-function formatTime(seconds) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    if (h > 0) return `${h}ч ${m}м`;
-    return `${m}м`;
-}
-
+function formatTime(seconds) { const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); if (h > 0) return `${h}ч ${m}м`; return `${m}м`; }
 function setShopFilter(f) { shopFilter = f; shopLimit = 20; view(); }
-function onSearchInput(val) {
-    searchQuery = val;
-    shopLimit = 20;
-    const displayItems = getFilteredItems();
-    const container = document.getElementById('shop-items');
-    if (container) container.innerHTML = renderShopItems(displayItems);
-}
-
-function getFilteredItems() {
-    let displayItems = ITEMS;
-    if (shopFilter !== 'all') {
-        const allowed = CATEGORIES[shopFilter].types;
-        displayItems = displayItems.filter(i => allowed.includes(i.t));
-    }
-    if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        displayItems = displayItems.filter(i => i.n.toLowerCase().includes(q));
-    }
-    return displayItems;
-}
-
+function onSearchInput(val) { searchQuery = val; shopLimit = 20; const displayItems = getFilteredItems(); const container = document.getElementById('shop-items'); if (container) container.innerHTML = renderShopItems(displayItems); }
+function getFilteredItems() { let displayItems = ITEMS; if (shopFilter !== 'all') { const allowed = CATEGORIES[shopFilter].types; displayItems = displayItems.filter(i => allowed.includes(i.t)); } if (searchQuery) { const q = searchQuery.toLowerCase(); displayItems = displayItems.filter(i => i.n.toLowerCase().includes(q)); } return displayItems; }
 function renderShopItems(displayItems) {
     if (displayItems.length === 0) return '<p style="text-align:center;color:var(--mut);margin-top:20px;">Ничего не найдено</p>';
-    
-    let html = displayItems.slice(0, shopLimit).map(i=>{
-        const o=S.own[i.id];
-        return `<div class="card">
-            <div class="ic">${artSpan(i)}</div>
-            <div class="t"><b>${i.n}</b><small style="color:var(--ac2)">${['Обычная','Редкая','Эпик','Легенда'][i.r]}</small><br><small>${fmt(i.p)} ₽</small></div>
-            <button class="btn ${o?'':'pri'}" onclick="buy('${i.id}')" ${o?'disabled':''}>${o?'Есть':'Купить'}</button>
-        </div>`;
-    }).join('');
-
-    if(shopLimit < displayItems.length) {
-        html += `<button class="btn" onclick="shopLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${shopLimit} из ${displayItems.length})</button>`;
-    }
-    return html;
+    let html = displayItems.slice(0, shopLimit).map(i=>{ const o=S.own[i.id]; return `<div class="card"><div class="ic">${artSpan(i)}</div><div class="t"><b>${i.n}</b><small style="color:var(--ac2)">${['Обычная','Редкая','Эпик','Легенда'][i.r]}</small><br><small>${fmt(i.p)} ₽</small></div><button class="btn ${o?'':'pri'}" onclick="buy('${i.id}')" ${o?'disabled':''}>${o?'Есть':'Купить'}</button></div>`; }).join('');
+    if(shopLimit < displayItems.length) html += `<button class="btn" onclick="shopLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${shopLimit} из ${displayItems.length})</button>`; return html;
 }
-
 function view(){
- const scrollPos = $('main').scrollTop;
- const m=$('main'); let h='';
- 
- if(tab==='tap'){
-  h=`<div id="tapw">
-      <div id="tap">
-        <svg viewBox="0 0 100 100" fill="none">
-          <path d="M30 35 C30 15, 70 15, 70 35" stroke="#000" stroke-width="6" stroke-linecap="round"/>
-          <path d="M20 45 L80 45 L90 90 C90 95, 85 100, 80 100 L20 100 C15 100, 10 95, 10 90 L20 45Z" fill="#10130a"/>
-          <text x="50" y="82" font-size="40" font-weight="900" fill="#b6ff3c" text-anchor="middle">$</text>
-        </svg>
-      </div>
-      <div class="tap-val">+${fmt(getTapValue())} ₽ за тап</div>
-      
-      <div class="upgrades">
-         <div class="up-card">
-             <div class="up-card-info"><b>👆 Сила Тапа</b><small>Увеличивает доход за клик</small></div>
-             <button class="btn pri" onclick="buyUpgrade('tap')" ${S.r < getTapCost() ? 'disabled' : ''}>Ур. ${S.tapLvl} | ${fmt(getTapCost())} ₽</button>
-         </div>
-         <div class="up-card">
-             <div class="up-card-info"><b>🤖 Автокликер</b><small>Дает пассивный доход</small></div>
-             <button class="btn pk" onclick="buyUpgrade('auto')" ${S.r < getAutoCost() ? 'disabled' : ''}>Ур. ${S.autoLvl} | ${fmt(getAutoCost())} ₽</button>
-         </div>
-      </div>
-     </div>`;
- } else if(tab==='shop'){
-  h = '<h3 style="margin-top:0">Дрип Шоп</h3>';
-  h += '<div class="shop-controls">';
-  h += `<input type="text" id="shop-search" class="shop-search" placeholder="🔍 Поиск (например: часы, худи, Gucci...)" value="${searchQuery}" oninput="onSearchInput(this.value)" autocomplete="off">`;
-  h += '<div class="shop-filters">';
-  for(let key in CATEGORIES) {
-      h += `<button class="filter-btn ${shopFilter === key ? 'on' : ''}" onclick="setShopFilter('${key}')">${CATEGORIES[key].name}</button>`;
-  }
-  h += '</div></div>';
-
-  const displayItems = getFilteredItems();
-  h += `<div id="shop-items">${renderShopItems(displayItems)}</div>`;
-
- } else if(tab==='inv'){
-  h='<h3 style="margin-top:0">Твой Инвентарь</h3>';
-  const owned=ITEMS.filter(i=>S.own[i.id]);
-  if(!owned.length) h+='<p style="text-align:center;color:var(--mut);margin-top:20px;">Пока пусто. Купи шмот в магазине!</p>';
-  else {
-      h+='<div class="grid">';
-      h+=owned.slice(0, invLimit).map(i=>`<div class="cell own">${artSpan(i)}<div style="margin-top:5px;line-height:1.1">${i.n}</div></div>`).join('');
-      h+='</div>';
-      if(invLimit < owned.length) h += `<button class="btn" onclick="invLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${invLimit} из ${owned.length})</button>`;
-  }
+ const scrollPos = $('main').scrollTop; const m=$('main'); let h='';
+ if(tab==='tap'){ h=`<div id="tapw"><div id="tap"><svg viewBox="0 0 100 100" fill="none"><path d="M30 35 C30 15, 70 15, 70 35" stroke="#000" stroke-width="6" stroke-linecap="round"/><path d="M20 45 L80 45 L90 90 C90 95, 85 100, 80 100 L20 100 C15 100, 10 95, 10 90 L20 45Z" fill="#10130a"/><text x="50" y="82" font-size="40" font-weight="900" fill="#b6ff3c" text-anchor="middle">$</text></svg></div><div class="tap-val">+${fmt(getTapValue())} ₽ за тап</div><div class="upgrades"><div class="up-card"><div class="up-card-info"><b>👆 Сила Тапа</b><small>Увеличивает доход за клик</small></div><button class="btn pri" onclick="buyUpgrade('tap')" ${S.r < getTapCost() ? 'disabled' : ''}>Ур. ${S.tapLvl} | ${fmt(getTapCost())} ₽</button></div><div class="up-card"><div class="up-card-info"><b>🤖 Автокликер</b><small>Дает пассивный доход</small></div><button class="btn pk" onclick="buyUpgrade('auto')" ${S.r < getAutoCost() ? 'disabled' : ''}>Ур. ${S.autoLvl} | ${fmt(getAutoCost())} ₽</button></div></div></div>`;
+ } else if(tab==='shop'){ h = '<h3 style="margin-top:0">Дрип Шоп</h3><div class="shop-controls">'; h += `<input type="text" id="shop-search" class="shop-search" placeholder="🔍 Поиск (например: часы, худи, Gucci...)" value="${searchQuery}" oninput="onSearchInput(this.value)" autocomplete="off"><div class="shop-filters">`; for(let key in CATEGORIES) h += `<button class="filter-btn ${shopFilter === key ? 'on' : ''}" onclick="setShopFilter('${key}')">${CATEGORIES[key].name}</button>`; h += '</div></div>'; const displayItems = getFilteredItems(); h += `<div id="shop-items">${renderShopItems(displayItems)}</div>`;
+ } else if(tab==='inv'){ h='<h3 style="margin-top:0">Твой Инвентарь</h3>'; const owned=ITEMS.filter(i=>S.own[i.id]); if(!owned.length) h+='<p style="text-align:center;color:var(--mut);margin-top:20px;">Пока пусто. Купи шмот в магазине!</p>'; else { h+='<div class="grid">'; h+=owned.slice(0, invLimit).map(i=>`<div class="cell own">${artSpan(i)}<div style="margin-top:5px;line-height:1.1">${i.n}</div></div>`).join(''); h+='</div>'; if(invLimit < owned.length) h += `<button class="btn" onclick="invLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${invLimit} из ${owned.length})</button>`; }
  } else if(tab==='stand'){
-  h=`<h3 style="margin-top:0">Примерочная</h3>`;
-  
-  h+=`<div class="stand-container">
-      <div class="stand-spotlight"></div>
-      <div class="stand-podium"></div>
-      
-      <div class="mannequin-wrapper">
-          <svg class="mannequin-base" viewBox="0 0 100 200" preserveAspectRatio="xMidYMax meet">
-              <defs>
-                  <linearGradient id="mannequin-grad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#111"/>
-                      <stop offset="40%" stop-color="#333"/>
-                      <stop offset="60%" stop-color="#2a2a2a"/>
-                      <stop offset="100%" stop-color="#050505"/>
-                  </linearGradient>
-              </defs>
-              <ellipse cx="50" cy="16" rx="8" ry="12" fill="url(#mannequin-grad)"/>
-              <rect x="46" y="28" width="8" height="10" fill="url(#mannequin-grad)"/>
-              <path d="M25 40 Q50 35 75 40 L65 95 Q50 100 35 95 Z" fill="url(#mannequin-grad)"/>
-              <path d="M25 40 Q15 50 16 80 L14 105 L20 105 L22 80 Q22 55 28 45 Z" fill="url(#mannequin-grad)"/>
-              <path d="M75 40 Q85 50 84 80 L86 105 L80 105 L78 80 Q78 55 72 45 Z" fill="url(#mannequin-grad)"/>
-              <path d="M35 95 L48 95 L46 175 L38 175 Z" fill="url(#mannequin-grad)"/>
-              <path d="M65 95 L52 95 L54 175 L62 175 Z" fill="url(#mannequin-grad)"/>
-          </svg>`;
-          
-      const eqArray = Object.keys(SLOTS).map(slot => ({ slot, item: IM[S.eq[slot]], pos: EQ_POS[slot] }))
-                                     .filter(x => x.item)
-                                     .sort((a, b) => a.pos.z - b.pos.z);
-          
-      eqArray.forEach(x => {
-          h+=`<div class="eq-item" style="top:${x.pos.top};left:${x.pos.left};transform:translate(-50%, -50%) scale(${x.pos.scale}); z-index:${x.pos.z};">
-                ${artSpan(x.item, true)}
-              </div>`;
-      });
-      
-  h+=`</div></div>`;
-  
-  h+=`<div class="card" style="background:rgba(182,255,60,0.1);border-color:var(--ac);">
-      <div class="t"><b>Флекс Стенда</b><small>Стоимость: ${fmt(getStandValue())} ₽</small></div>
-      <b style="color:var(--ac);font-size:20px;">x${getStandBonus().toFixed(2)}</b>
-  </div>`;
-  
-  h+=`<div class="grid" style="grid-template-columns: 1fr 1fr;">`;
-  for(let slot in SLOTS) {
-      const eqId = S.eq[slot];
-      const item = eqId ? IM[eqId] : null;
-      h+=`<div class="slot-btn" onclick="openSelect('${slot}')" style="flex-direction:column; text-align:center; padding:15px 10px; gap:8px;">
-             <div class="ic" style="width:50px;height:50px;">${item ? artSpan(item) : '＋'}</div>
-             <div>
-                 <b style="font-size:12px;">${SLOT_NAMES[slot]}</b>
-                 <small style="margin:0; max-width:100px;">${item ? item.n : 'Пусто'}</small>
-             </div>
-      </div>`;
-  }
+  h=`<h3 style="margin-top:0">Примерочная</h3><div class="stand-container"><div class="stand-spotlight"></div><div class="stand-podium"></div><div class="mannequin-wrapper"><svg class="mannequin-base" viewBox="0 0 100 200" preserveAspectRatio="xMidYMax meet"><defs><linearGradient id="mannequin-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#111"/><stop offset="40%" stop-color="#333"/><stop offset="60%" stop-color="#2a2a2a"/><stop offset="100%" stop-color="#050505"/></linearGradient></defs><ellipse cx="50" cy="16" rx="8" ry="12" fill="url(#mannequin-grad)"/><rect x="46" y="28" width="8" height="10" fill="url(#mannequin-grad)"/><path d="M25 40 Q50 35 75 40 L65 95 Q50 100 35 95 Z" fill="url(#mannequin-grad)"/><path d="M25 40 Q15 50 16 80 L14 105 L20 105 L22 80 Q22 55 28 45 Z" fill="url(#mannequin-grad)"/><path d="M75 40 Q85 50 84 80 L86 105 L80 105 L78 80 Q78 55 72 45 Z" fill="url(#mannequin-grad)"/><path d="M35 95 L48 95 L46 175 L38 175 Z" fill="url(#mannequin-grad)"/><path d="M65 95 L52 95 L54 175 L62 175 Z" fill="url(#mannequin-grad)"/></svg>`;
+  const eqArray = Object.keys(SLOTS).map(slot => ({ slot, item: IM[S.eq[slot]], pos: EQ_POS[slot] })).filter(x => x.item).sort((a, b) => a.pos.z - b.pos.z);
+  eqArray.forEach(x => { h+=`<div class="eq-item" style="top:${x.pos.top};left:${x.pos.left};transform:translate(-50%, -50%) scale(${x.pos.scale}); z-index:${x.pos.z};">${artSpan(x.item, true)}</div>`; });
+  h+=`</div></div><div class="card" style="background:rgba(182,255,60,0.1);border-color:var(--ac);"><div class="t"><b>Флекс Стенда</b><small>Стоимость: ${fmt(getStandValue())} ₽</small></div><b style="color:var(--ac);font-size:20px;">x${getStandBonus().toFixed(2)}</b></div><div class="grid" style="grid-template-columns: 1fr 1fr;">`;
+  for(let slot in SLOTS) { const eqId = S.eq[slot]; const item = eqId ? IM[eqId] : null; h+=`<div class="slot-btn" onclick="openSelect('${slot}')" style="flex-direction:column; text-align:center; padding:15px 10px; gap:8px;"><div class="ic" style="width:50px;height:50px;">${item ? artSpan(item) : '＋'}</div><div><b style="font-size:12px;">${SLOT_NAMES[slot]}</b><small style="margin:0; max-width:100px;">${item ? item.n : 'Пусто'}</small></div></div>`; }
   h+=`</div>`;
-  
  } else if(tab==='top'){
-  h=`<h3 style="margin-top:0">Топ Дрипперов</h3>`;
-  
-  // Вкладки топа
-  h += `<div class="top-tabs">
-      <button class="top-tab ${topTab === 'money' ? 'on' : ''}" onclick="setTopTab('money')">💰 Деньги</button>
-      <button class="top-tab ${topTab === 'taps' ? 'on' : ''}" onclick="setTopTab('taps')">👆 Клики</button>
-      <button class="top-tab ${topTab === 'time' ? 'on' : ''}" onclick="setTopTab('time')">⏱ Время</button>
-      <button class="top-tab ${topTab === 'set' ? 'on' : ''}" onclick="setTopTab('set')">👕 Лучший Сет</button>
-  </div>`;
-
-  // Список игроков
-  const list = getTopList();
-  h += list.map((p, idx) => {
-      let val = '';
-      if (topTab === 'money') val = fmt(p.money) + ' ₽';
-      else if (topTab === 'taps') val = fmt(p.taps) + ' раз';
-      else if (topTab === 'time') val = formatTime(p.timePlayed);
-      else if (topTab === 'set') val = fmt(p.setValue) + ' ₽';
-
-      return `<div class="top-row ${p.isMe ? 'me' : ''}">
-          <div class="pos">${idx + 1}</div>
-          <div class="name">${p.name}</div>
-          <div class="val">${val}</div>
-      </div>`;
-  }).join('');
-
+  h=`<h3 style="margin-top:0">Реальный Топ</h3><div class="top-tabs"><button class="top-tab ${topTab === 'money' ? 'on' : ''}" onclick="setTopTab('money')">💰 Деньги</button><button class="top-tab ${topTab === 'taps' ? 'on' : ''}" onclick="setTopTab('taps')">👆 Клики</button><button class="top-tab ${topTab === 'time' ? 'on' : ''}" onclick="setTopTab('time')">⏱ Время</button><button class="top-tab ${topTab === 'set' ? 'on' : ''}" onclick="setTopTab('set')">👕 Лучший Сет</button></div>`;
+  const list = getTopList(); if (list.length === 0) h += '<p style="text-align:center;color:var(--mut);margin-top:20px;">Загрузка данных с сервера...</p>';
+  else { h += list.map((p, idx) => { let val = ''; if (topTab === 'money') val = fmt(p.money) + ' ₽'; else if (topTab === 'taps') val = fmt(p.taps) + ' раз'; else if (topTab === 'time') val = formatTime(p.timePlayed); else if (topTab === 'set') val = fmt(p.setValue) + ' ₽'; return `<div class="top-row ${p.isMe ? 'me' : ''}"><div class="pos">${idx + 1}</div><div class="name">${p.name}</div><div class="val">${val}</div></div>`; }).join(''); }
  } else if(tab==='settings'){
   const usedCount = S.promos ? Object.keys(S.promos).length : 0;
-  h=`<h3 style="margin-top:0">Настройки</h3>
-    
-    <div class="card" style="flex-direction:column; align-items:stretch; gap:15px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <b>🎵 Громкость музыки</b>
-        </div>
-        <div>
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                <small style="color:var(--mut)">Тише / Громче</small>
-                <small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small>
-            </div>
-            <input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)">
-        </div>
-    </div>
-    
-    <div class="card" style="flex-direction:column; align-items:stretch; gap:10px;">
-        <div style="display:flex; justify-content:space-between;">
-            <b>🎁 Промокод</b>
-            <small style="color:var(--mut)">Использовано: ${usedCount}/6</small>
-        </div>
-        <div style="display:flex; gap:8px;">
-            <input type="text" id="promo-input" placeholder="Введи код..." class="promo-inp" autocomplete="off">
-            <button class="btn pri" onclick="applyPromo()">ОК</button>
-        </div>
-    </div>
-    
-    <div class="card" style="flex-direction:column; align-items:stretch; gap:5px; padding:16px 18px;">
-        <b style="margin-bottom:8px;">👨‍💻 Создатели</b>
-        <a href="https://t.me/iticov" target="_blank" class="contact-link">
-            <span>Создатель игры</span>
-            <small class="tg-username">@iticov</small>
-        </a>
-        <a href="https://t.me/ro9mbo" target="_blank" class="contact-link">
-            <span>Помощник создателя</span>
-            <small class="tg-username">@ro9mbo</small>
-        </a>
-    </div>
-    
-    <button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
+  h=`<h3 style="margin-top:0">Настройки</h3><div class="card" style="flex-direction:column; align-items:stretch; gap:15px;"><div style="display:flex; justify-content:space-between; align-items:center;"><b>🎵 Громкость музыки</b></div><div><div style="display:flex; justify-content:space-between; margin-bottom:8px;"><small style="color:var(--mut)">Тише / Громче</small><small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small></div><input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)"></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:10px;"><div style="display:flex; justify-content:space-between;"><b>🎁 Промокод</b><small style="color:var(--mut)">Использовано: ${usedCount}/8</small></div><div style="display:flex; gap:8px;"><input type="text" id="promo-input" placeholder="Введи код..." class="promo-inp" autocomplete="off"><button class="btn pri" onclick="applyPromo()">ОК</button></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:5px; padding:16px 18px;"><b style="margin-bottom:8px;">👨‍💻 Создатели</b><a href="https://t.me/iticov" target="_blank" class="contact-link"><span>Создатель игры</span><small class="tg-username">@iticov</small></a><a href="https://t.me/ro9mbo" target="_blank" class="contact-link"><span>Помощник создателя</span><small class="tg-username">@ro9mbo</small></a></div><button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
  }
- m.innerHTML=h;
- 
- if (tab !== 'shop' || !searchQuery) {
-    $('main').scrollTop = scrollPos; 
- }
- 
- if(tab==='tap'){
-    $('tap').addEventListener('pointerdown',()=>{
-        S.r += getTapValue(); 
-        S.taps++; // Считаем тапы
-        save(); head();
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-    });
- }
+ m.innerHTML=h; if (tab !== 'shop' || !searchQuery) { $('main').scrollTop = scrollPos; }
+ if(tab==='tap'){ $('tap').addEventListener('pointerdown',()=>{ S.r += getTapValue(); S.taps++; save(); head(); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }); }
 }
-
-function buyUpgrade(type){
-    if(type === 'tap'){
-        const cost = getTapCost();
-        if(S.r >= cost) { S.r -= cost; S.tapLvl++; save(); head(); view(); }
-        else alert('Мало кэша!');
-    } else if(type === 'auto'){
-        const cost = getAutoCost();
-        if(S.r >= cost) { S.r -= cost; S.autoLvl++; save(); head(); view(); }
-        else alert('Мало кэша!');
-    }
-}
-
-function buy(id){
-    const item = ITEMS.find(x=>x.id===id);
-    if(S.r >= item.p){
-        S.r -= item.p; S.own[id] = 1; save(); head(); 
-        const displayItems = getFilteredItems();
-        const container = document.getElementById('shop-items');
-        if (container) container.innerHTML = renderShopItems(displayItems);
-        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-    } else alert('Мало кэша!');
-}
-
+function buyUpgrade(type){ if(type === 'tap'){ const cost = getTapCost(); if(S.r >= cost) { S.r -= cost; S.tapLvl++; save(); head(); view(); } else alert('Мало кэша!'); } else if(type === 'auto'){ const cost = getAutoCost(); if(S.r >= cost) { S.r -= cost; S.autoLvl++; save(); head(); view(); } else alert('Мало кэша!'); } }
+function buy(id){ const item = ITEMS.find(x=>x.id===id); if(S.r >= item.p){ S.r -= item.p; S.own[id] = 1; save(); head(); const displayItems = getFilteredItems(); const container = document.getElementById('shop-items'); if (container) container.innerHTML = renderShopItems(displayItems); if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } else alert('Мало кэша!'); }
 let currentSlot = null;
-function openSelect(slot) {
-    currentSlot = slot;
-    const types = SLOTS[slot];
-    const available = ITEMS.filter(i => S.own[i.id] && types.includes(i.t));
-    
-    $('modal-title').textContent = SLOT_NAMES[slot];
-    const list = $('modal-list');
-    
-    if(available.length === 0) {
-        list.innerHTML = '<p style="text-align:center;color:var(--mut);grid-column:1/-1;">Нет вещей для этого слота</p>';
-    } else {
-        list.innerHTML = available.map(i => `<div class="cell own" onclick="equipItem('${i.id}')">${artSpan(i)}<div style="margin-top:5px;line-height:1.1">${i.n}</div></div>`).join('');
-    }
-    $('select-modal').classList.add('open');
-}
-
-function equipItem(id) {
-    if(currentSlot) {
-        S.eq[currentSlot] = id;
-        save(); head(); view(); closeModal();
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-    }
-}
-
-function closeModal() {
-    $('select-modal').classList.remove('open');
-    currentSlot = null;
-}
-
-$('nav').addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b) return;
-    tab=b.dataset.t;
-    document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
-    view();
-});
-
-// Таймер для времени в игре
-setInterval(() => {
-    if (S.autoLvl > 0) {
-        S.r += getAutoValue();
-        head();
-    }
-    S.timePlayed++; // +1 секунда к времени игры
-}, 1000);
-
+function openSelect(slot) { currentSlot = slot; const types = SLOTS[slot]; const available = ITEMS.filter(i => S.own[i.id] && types.includes(i.t)); $('modal-title').textContent = SLOT_NAMES[slot]; const list = $('modal-list'); if(available.length === 0) list.innerHTML = '<p style="text-align:center;color:var(--mut);grid-column:1/-1;">Нет вещей для этого слота</p>'; else list.innerHTML = available.map(i => `<div class="cell own" onclick="equipItem('${i.id}')">${artSpan(i)}<div style="margin-top:5px;line-height:1.1">${i.n}</div></div>`).join(''); $('select-modal').classList.add('open'); }
+function equipItem(id) { if(currentSlot) { S.eq[currentSlot] = id; save(); head(); view(); closeModal(); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium'); } }
+function closeModal() { $('select-modal').classList.remove('open'); currentSlot = null; }
+$('nav').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; tab=b.dataset.t; document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b)); view(); });
+setInterval(() => { if (S.autoLvl > 0) { S.r += getAutoValue(); head(); } S.timePlayed++; }, 1000);
 setInterval(save, 5000);
-
 head(); view();
 </script>
 </body>
