@@ -195,7 +195,20 @@ const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 const EQ_POS = { head: { top: '11%', left: '50%', scale: 1.1, z: 6 }, neck: { top: '23%', left: '50%', scale: 0.6, z: 5 }, top: { top: '33%', left: '50%', scale: 2.0, z: 3 }, bot: { top: '68%', left: '50%', scale: 1.8, z: 2 }, shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 }, wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 }, back: { top: '35%', left: '12%', scale: 1.5, z: 1 }, waist: { top: '49%', left: '50%', scale: 1.2, z: 4 } };
-const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100000 }, 'DRIL': { r: 75000 }, 'DRIP': { r: 30000 }, 'USA': { r: 150000 }, 'M0N3SY': { r: 400000 }, 'RAGOF': { r: 500000 } };
+
+// ПРОМОКОДЫ
+const PROMOS = { 
+    'JAMBO': { r: 50000 }, 
+    'ITICOV': { r: 25000 }, 
+    '2026': { r: 100000 }, 
+    'DRIL': { r: 75000 }, 
+    'DRIP': { r: 30000 }, 
+    'USA': { r: 150000 }, 
+    'M0N3SY': { r: 400000 }, 
+    'RAGOF': { r: 500000 },
+    'MILLION': { r: 100000000 }
+};
+
 function applyPromo() {
     const input = document.getElementById('promo-input'); if (!input) return; const code = input.value.trim().toUpperCase(); if (!code) return;
     if (!S.promos) S.promos = {}; if (S.promos[code]) { alert('Этот промокод уже активирован!'); return; }
@@ -206,7 +219,6 @@ function resetGame() { if (confirm('Точно сбросить весь про�
 function head(){ $('bal').textContent = fmt(S.r) + ' ₽'; $('sub').textContent = '+' + fmt(getAutoValue()) + ' ₽/сек (x' + getStandBonus().toFixed(2) + ')'; $('rank').textContent = '🔥 Уличный дриппер'; }
 let tab='tap'; let shopLimit = 20; let invLimit = 20; let shopFilter = 'all'; let searchQuery = ''; let topTab = 'money'; let realTopData = []; 
 const CATEGORIES = { 'all': { name: 'Все', types: null }, 'top': { name: 'Верх', types: ['hood', 'tee', 'puff', 'jack'] }, 'bot': { name: 'Низ', types: ['jeans', 'cargo', 'boxers'] }, 'shoe': { name: 'Обувь', types: ['sneak', 'socks'] }, 'head': { name: 'Голова', types: ['cap', 'mask', 'shades'] }, 'acc': { name: 'Аксессуары', types: ['chain', 'bag', 'pack', 'watch', 'belt'] } };
-
 async function syncWithServer() { 
     const { error } = await _supabase.from('leaderboard').upsert({ 
         name: myName, 
@@ -215,13 +227,8 @@ async function syncWithServer() {
         time_played: S.timePlayed, 
         set_value: getStandValue() 
     }, { onConflict: 'name' }); 
-    
-    if (error) {
-        alert('ОШИБКА БАЗЫ: ' + error.message);
-        console.error('Ошибка синхронизации:', error);
-    }
+    if (error) { alert('ОШИБКА БАЗЫ: ' + error.message); console.error(error); }
 }
-
 async function loadTopFromServer() { const { data, error } = await _supabase.from('leaderboard').select('*').order('money', { ascending: false }).limit(50); if (error) { console.error('Ошибка загрузки:', error); return; } realTopData = data.map(p => ({ name: p.name, money: p.money, taps: p.taps, timePlayed: p.time_played, setValue: p.set_value })); if (tab === 'top') view(); }
 syncWithServer(); loadTopFromServer(); setInterval(syncWithServer, 10000);
 function setTopTab(t) { topTab = t; view(); }
@@ -258,7 +265,7 @@ function view(){
   else { h += list.map((p, idx) => { let val = ''; if (topTab === 'money') val = fmt(p.money) + ' ₽'; else if (topTab === 'taps') val = fmt(p.taps) + ' раз'; else if (topTab === 'time') val = formatTime(p.timePlayed); else if (topTab === 'set') val = fmt(p.setValue) + ' ₽'; return `<div class="top-row ${p.isMe ? 'me' : ''}"><div class="pos">${idx + 1}</div><div class="name">${p.name}</div><div class="val">${val}</div></div>`; }).join(''); }
  } else if(tab==='settings'){
   const usedCount = S.promos ? Object.keys(S.promos).length : 0;
-  h=`<h3 style="margin-top:0">Настройки</h3><div class="card" style="flex-direction:column; align-items:stretch; gap:15px;"><div style="display:flex; justify-content:space-between; align-items:center;"><b>🎵 Громкость музыки</b></div><div><div style="display:flex; justify-content:space-between; margin-bottom:8px;"><small style="color:var(--mut)">Тише / Громче</small><small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small></div><input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)"></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:10px;"><div style="display:flex; justify-content:space-between;"><b>🎁 Промокод</b><small style="color:var(--mut)">Использовано: ${usedCount}/8</small></div><div style="display:flex; gap:8px;"><input type="text" id="promo-input" placeholder="Введи код..." class="promo-inp" autocomplete="off"><button class="btn pri" onclick="applyPromo()">ОК</button></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:5px; padding:16px 18px;"><b style="margin-bottom:8px;">👨‍💻 Создатели</b><a href="https://t.me/iticov" target="_blank" class="contact-link"><span>Создатель игры</span><small class="tg-username">@iticov</small></a><a href="https://t.me/ro9mbo" target="_blank" class="contact-link"><span>Помощник создателя</span><small class="tg-username">@ro9mbo</small></a></div><button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
+  h=`<h3 style="margin-top:0">Настройки</h3><div class="card" style="flex-direction:column; align-items:stretch; gap:15px;"><div style="display:flex; justify-content:space-between; align-items:center;"><b>🎵 Громкость музыки</b></div><div><div style="display:flex; justify-content:space-between; margin-bottom:8px;"><small style="color:var(--mut)">Тише / Громче</small><small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small></div><input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)"></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:10px;"><div style="display:flex; justify-content:space-between;"><b>🎁 Промокод</b><small style="color:var(--mut)">Использовано: ${usedCount}/9</small></div><div style="display:flex; gap:8px;"><input type="text" id="promo-input" placeholder="Введи код..." class="promo-inp" autocomplete="off"><button class="btn pri" onclick="applyPromo()">ОК</button></div></div><div class="card" style="flex-direction:column; align-items:stretch; gap:5px; padding:16px 18px;"><b style="margin-bottom:8px;">👨‍💻 Создатели</b><a href="https://t.me/iticov" target="_blank" class="contact-link"><span>Создатель игры</span><small class="tg-username">@iticov</small></a><a href="https://t.me/ro9mbo" target="_blank" class="contact-link"><span>Помощник создателя</span><small class="tg-username">@ro9mbo</small></a></div><button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
  }
  m.innerHTML=h; if (tab !== 'shop' || !searchQuery) { $('main').scrollTop = scrollPos; }
  if(tab==='tap'){ $('tap').addEventListener('pointerdown',()=>{ S.r += getTapValue(); S.taps++; save(); head(); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }); }
