@@ -18,10 +18,10 @@ header{padding:20px 16px 10px;text-align:center;position:relative;z-index:15;fle
 main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:10px 14px 80px;position:relative;z-index:10}
 main::-webkit-scrollbar{display:none}
 
-nav{display:flex;gap:4px;padding:10px 8px;background:rgba(20,20,25,0.95);backdrop-filter:var(--blur);border-top:1px solid var(--card-border);justify-content:space-between;position:absolute;bottom:0;left:0;right:0;z-index:20;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+nav{display:flex;gap:4px;padding:10px 6px;background:rgba(20,20,25,0.95);backdrop-filter:var(--blur);border-top:1px solid var(--card-border);justify-content:space-between;position:absolute;bottom:0;left:0;right:0;z-index:20;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 nav button{flex:1;min-width:0;padding:8px 0;border:0;border-radius:14px;background:transparent;color:var(--mut);font-weight:700;font-size:9px;transition:.2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;}
 nav button.on{background:var(--card);border:1px solid var(--card-border);color:var(--ac);box-shadow:0 0 15px rgba(182,255,60,0.1)}
-nav svg{width:20px;height:20px;fill:currentColor;}
+nav svg{width:18px;height:18px;fill:currentColor;}
 
 .card{background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--card-border);border-radius:18px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;transition:.2s}
 .ic{width:52px;height:52px;border-radius:14px;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none;overflow:hidden;border:1px solid rgba(255,255,255,0.05)}
@@ -45,8 +45,8 @@ nav svg{width:20px;height:20px;fill:currentColor;}
 /* КРАСИВЫЙ СТЕНД */
 .stand-container {position: relative;width: 100%;height: 420px;background: radial-gradient(circle at 50% 30%, #1a1a24 0%, #09090b 80%);border-radius: 24px;border: 1px solid var(--card-border);margin-bottom: 15px;display: flex;justify-content: center;align-items: flex-end;overflow: hidden;box-shadow: inset 0 0 50px rgba(0,0,0,0.8);}
 .stand-spotlight {position: absolute;top: 10%;width: 150px;height: 150px;background: var(--ac);filter: blur(80px);opacity: 0.15;border-radius: 50%;}
-.stand-podium {position: absolute;bottom: 15px;width: 180px;height: 30px;background: linear-gradient(to bottom, #222, #111);border-radius: 50%;border-bottom: 2px solid #333;box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(182,255,60,0.1);}
-.mannequin-base {position: absolute;bottom: 30px;width: 140px;height: 320px;}
+.stand-podium {position: absolute;bottom: 15px;width: 200px;height: 30px;background: linear-gradient(to bottom, #222, #111);border-radius: 50%;border-bottom: 2px solid #333;box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(182,255,60,0.1);}
+.mannequin-base {position: absolute;bottom: 30px;width: 150px;height: 320px;}
 .eq-item {position: absolute;width: 100px;height: 100px;transition: all 0.3s ease;filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));pointer-events: none;}
 .eq-item svg {width: 100%;height: 100%;}
 .slot-btn{background:var(--card);border:1px solid var(--card-border);padding:10px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer;transition:0.2s;}
@@ -69,11 +69,24 @@ nav svg{width:20px;height:20px;fill:currentColor;}
 .cell .artw{width:60px;height:60px;}
 .artw{display:block;width:100%;height:100%;}
 .artw svg{width:100%;height:100%;display:block;}
+
+/* НАСТРОЙКИ */
+input[type=range] {-webkit-appearance: none;width: 100%;height: 6px;background: rgba(255,255,255,0.1);border-radius: 3px;outline: none;}
+input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;height: 22px;background: var(--ac);border-radius: 50%;cursor: pointer;box-shadow: 0 0 10px rgba(182,255,60,0.5);border: 2px solid #10130a;}
+.promo-inp {flex: 1;padding: 12px;border-radius: 10px;border: 1px solid var(--card-border);background: rgba(0,0,0,0.5);color: var(--fg);font-size: 14px;outline: none;text-transform: uppercase;font-weight: 700;letter-spacing: 1px;}
+.promo-inp:focus {border-color: var(--ac);}
+
+/* КОНТАКТЫ */
+.contact-link {display:flex; justify-content:space-between; align-items:center; padding:12px 0; text-decoration:none; color:var(--fg); border-bottom:1px solid rgba(255,255,255,0.05); transition:0.2s;}
+.contact-link:last-child {border-bottom:none;}
+.contact-link:active {opacity:0.7;}
+.contact-link span {font-weight:700; font-size:14px;}
+.contact-link small {color:var(--mut); font-size:12px;}
+.tg-username {color:var(--ac); font-weight:900;}
 </style>
 </head>
 <body>
 
-<!-- МУЗЫКА -->
 <audio id="bg-music" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -91,6 +104,7 @@ nav svg{width:20px;height:20px;fill:currentColor;}
   <button data-t="inv"><svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>Вещи</button>
   <button data-t="stand"><svg viewBox="0 0 24 24"><path d="M12 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 6c-1.1 0-2 .9-2 2v4c0 .55.45 1 1 1h.5v6c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-6h.5c.55 0 1-.45 1-1v-4c0-1.1-.9-2-2-2h-2z"/></svg>Стенд</button>
   <button data-t="top"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Топ</button>
+  <button data-t="settings"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>Настр.</button>
  </nav>
 </div>
 
@@ -110,37 +124,42 @@ if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
 
-// --- ЛОГИКА МУЗЫКИ ---
+// --- МУЗЫКА ---
 const bgMusic = document.getElementById('bg-music');
-bgMusic.volume = 0.4; // Громкость (от 0 до 1)
+let musicVolume = parseInt(localStorage.getItem('musicVol') || '40');
+bgMusic.volume = musicVolume / 100;
 let musicPlaying = false;
 let musicInitialized = false;
 
-// Включаем при первом тапе/клике
 document.body.addEventListener('pointerdown', () => {
     if (!musicInitialized) {
         musicInitialized = true;
         bgMusic.play().then(() => {
             musicPlaying = true;
             updateMusicUI();
-        }).catch(e => console.log("Браузер заблокировал автоплей"));
+        }).catch(e => console.log("Autoplay blocked"));
     }
 });
 
 function toggleMusic() {
-    if (bgMusic.paused) {
-        bgMusic.play();
-        musicPlaying = true;
-    } else {
-        bgMusic.pause();
-        musicPlaying = false;
-    }
+    if (bgMusic.paused) { bgMusic.play(); musicPlaying = true; }
+    else { bgMusic.pause(); musicPlaying = false; }
     updateMusicUI();
 }
 
 function updateMusicUI() {
     const el = document.getElementById('music-status');
     if (el) el.innerText = musicPlaying ? 'ВКЛ' : 'ВЫКЛ';
+    const btn = document.getElementById('music-btn');
+    if (btn) btn.className = 'btn ' + (musicPlaying ? 'pri' : '');
+}
+
+function setVolume(val) {
+    musicVolume = parseInt(val);
+    bgMusic.volume = musicVolume / 100;
+    localStorage.setItem('musicVol', musicVolume);
+    const lbl = document.getElementById('vol-label');
+    if (lbl) lbl.textContent = musicVolume + '%';
 }
 
 // --- ДВИЖОК ГЕНЕРАЦИИ ВЕЩЕЙ ---
@@ -185,16 +204,13 @@ function artSpan(i, noBg = false) {
     const D={ 1:"<pattern id='"+id+"p' width='12' height='12' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><rect width='12' height='12' fill='"+i.c1+"'/><rect width='5' height='12' fill='"+i.c2+"'/></pattern>", 2:"<pattern id='"+id+"p' width='14' height='14' patternUnits='userSpaceOnUse'><rect width='14' height='14' fill='"+i.c1+"'/><circle cx='7' cy='7' r='3' fill='"+i.c2+"'/></pattern>", 3:"<pattern id='"+id+"p' width='20' height='20' patternUnits='userSpaceOnUse'><rect width='20' height='20' fill='"+i.c1+"'/><rect width='10' height='10' fill='"+i.c2+"'/><rect x='10' y='10' width='10' height='10' fill='"+i.c2+"'/></pattern>", 4:"<pattern id='"+id+"p' width='32' height='32' patternUnits='userSpaceOnUse'><rect width='32' height='32' fill='"+i.c1+"'/><ellipse cx='8' cy='9' rx='9' ry='5' fill='"+i.c2+"' opacity='.75'/><ellipse cx='23' cy='22' rx='8' ry='6' fill='"+i.c2+"' opacity='.75'/></pattern>", 5:"<linearGradient id='"+id+"p' x1='0' x2='1' y1='0' y2='0'><stop offset='.5' stop-color='"+i.c1+"'/><stop offset='.5' stop-color='"+i.c2+"'/></linearGradient>", 6:"<linearGradient id='"+id+"p' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='"+i.c1+"'/><stop offset='1' stop-color='"+i.c2+"'/></linearGradient>" };
     let art=ART[i.t].split(MAIN[i.t]).join(pt?"url(#"+id+"p)":i.c1);
     if(ACC[i.t])art=art.split(ACC[i.t]).join(i.c2);
-    
     const bg = noBg ? 'transparent' : ['#2a2a34','#16304a','#2e1f4a','#4a3410'][i.r];
     const rc = noBg ? '' : ['','','#b36bff','#ffb02e'][i.r];
-    
     const bp=BP[i.t],bd=i.bi!==undefined&&bp?"<circle cx='"+bp[0]+"' cy='"+bp[1]+"' r='8' fill='#111' stroke='#fff' stroke-width='1.2'/><text transform='translate("+bp[0]+" "+(bp[1]+3)+") scale("+fx+" 1)' text-anchor='middle' font-size='"+(BR[i.bi][1].length>1?7:9)+"' font-weight='900' fill='#fff' font-family='Arial,sans-serif'>"+BR[i.bi][1]+"</text>":'';
-    
     return `<span class='artw'><svg viewBox='0 0 100 100'><defs>${D[pt]||''}</defs>${noBg?'':`<rect width='100' height='100' fill='${bg}'/>`}<g transform='translate(50 50) rotate(${i.rt}) scale(${fx*i.sc} ${i.sc}) translate(-50 -50)'>${art}${bd}</g>${rc?`<rect x='1.5' y='1.5' width='97' height='97' rx='8' fill='none' stroke='${rc}' stroke-width='3'/>`:''}</svg></span>`;
 }
 
-let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0 };
+let S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
 try { const x = localStorage.getItem('drip7'); if(x) S = Object.assign(S, JSON.parse(x)); } catch(e) {}
 const save = () => { try { localStorage.setItem('drip7', JSON.stringify(S)); } catch(e) {} };
 
@@ -215,10 +231,50 @@ const EQ_POS = {
     top: { top: '25%', left: '50%', transform: 'translateX(-50%) scale(1.1)', z: 5 },
     bot: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.95)', z: 4 },
     shoe: { top: '85%', left: '50%', transform: 'translateX(-50%) scale(0.75)', z: 6 },
-    wrist: { top: '50%', left: '20%', transform: 'translateX(-50%) scale(0.3) rotate(-15deg)', z: 11 },
+    wrist: { top: '43%', left: '37%', transform: 'translateX(-50%) scale(0.3) rotate(-15deg)', z: 11 },
     back: { top: '30%', left: '25%', transform: 'translateX(-50%) scale(0.8)', z: 2 },
     waist: { top: '52%', left: '50%', transform: 'translateX(-50%) scale(0.55)', z: 7 }
 };
+
+const PROMOS = {
+    'JAMBO': { r: 50000 },
+    'ITICOV': { r: 25000 },
+    '2026': { r: 100000 },
+    'DRIL': { r: 75000 },
+    'DRIP': { r: 30000 },
+    'USA': { r: 150000 }
+};
+
+function applyPromo() {
+    const input = document.getElementById('promo-input');
+    if (!input) return;
+    const code = input.value.trim().toUpperCase();
+    if (!code) return;
+    if (!S.promos) S.promos = {};
+    if (S.promos[code]) {
+        alert('Этот промокод уже активирован!');
+        return;
+    }
+    const reward = PROMOS[code];
+    if (!reward) {
+        alert('Неверный промокод ❌');
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+        return;
+    }
+    S.r += reward.r;
+    S.promos[code] = true;
+    save(); head(); view();
+    alert(`✅ Промокод ${code} активирован!\n+${fmt(reward.r)} ₽`);
+    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+
+function resetGame() {
+    if (confirm('Точно сбросить весь прогресс? Это нельзя отменить.')) {
+        localStorage.removeItem('drip7');
+        S = { r: 0, own: {}, eq: {}, tapLvl: 1, autoLvl: 0, promos: {} };
+        save(); head(); view();
+    }
+}
 
 function head(){
  $('bal').textContent = fmt(S.r) + ' ₽';
@@ -255,9 +311,6 @@ function view(){
              <button class="btn pk" onclick="buyUpgrade('auto')" ${S.r < getAutoCost() ? 'disabled' : ''}>Ур. ${S.autoLvl} | ${fmt(getAutoCost())} ₽</button>
          </div>
       </div>
-      
-      <!-- КНОПКА МУЗЫКИ -->
-      <button class="btn" onclick="toggleMusic()" style="width:100%; margin-top:10px;">🎵 Музыка: <span id="music-status">${musicPlaying ? 'ВКЛ' : 'ВЫКЛ'}</span></button>
      </div>`;
  } else if(tab==='shop'){
   h='<h3 style="margin-top:0">Дрип Шоп</h3>';
@@ -287,21 +340,29 @@ function view(){
       <div class="stand-spotlight"></div>
       <div class="stand-podium"></div>
       
+      <!-- МУЖСКОЙ МАНЕКЕН: широкие плечи, V-образный торс -->
       <svg class="mannequin-base" viewBox="0 0 100 200" preserveAspectRatio="xMidYMax meet">
           <defs>
               <linearGradient id="mannequin-grad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stop-color="#2a2a2a"/>
-                  <stop offset="50%" stop-color="#3a3a3a"/>
-                  <stop offset="100%" stop-color="#1a1a1a"/>
+                  <stop offset="0%" stop-color="#252525"/>
+                  <stop offset="50%" stop-color="#404040"/>
+                  <stop offset="100%" stop-color="#151515"/>
               </linearGradient>
           </defs>
-          <ellipse cx="50" cy="20" rx="14" ry="16" fill="url(#mannequin-grad)"/>
-          <rect x="45" y="35" width="10" height="10" fill="url(#mannequin-grad)"/>
-          <path d="M30 45 Q50 40 70 45 L75 105 L25 105 Z" fill="url(#mannequin-grad)"/>
-          <path d="M30 45 Q15 60 15 95 L25 95 Q25 65 35 50 Z" fill="url(#mannequin-grad)"/>
-          <path d="M70 45 Q85 60 85 95 L75 95 Q75 65 65 50 Z" fill="url(#mannequin-grad)"/>
-          <path d="M30 105 L40 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
-          <path d="M70 105 L60 180 L50 180 L50 120 Z" fill="url(#mannequin-grad)"/>
+          <!-- Голова (квадратная мужская) -->
+          <path d="M38 10 Q50 5 62 10 Q65 14 65 22 Q65 32 50 34 Q35 32 35 22 Q35 14 38 10 Z" fill="url(#mannequin-grad)"/>
+          <!-- Шея (толстая) -->
+          <rect x="42" y="32" width="16" height="14" fill="url(#mannequin-grad)"/>
+          <!-- Торс (широкие плечи - V-форма) -->
+          <path d="M18 50 Q30 44 50 44 Q70 44 82 50 L76 105 Q50 110 24 105 Z" fill="url(#mannequin-grad)"/>
+          <!-- Левая рука (мускулистая) -->
+          <path d="M18 50 Q10 55 8 80 Q8 100 14 108 L24 104 Q22 80 26 58 Z" fill="url(#mannequin-grad)"/>
+          <!-- Правая рука (мускулистая) -->
+          <path d="M82 50 Q90 55 92 80 Q92 100 86 108 L76 104 Q78 80 74 58 Z" fill="url(#mannequin-grad)"/>
+          <!-- Левая нога (сужение к низу) -->
+          <path d="M24 106 L46 106 L44 178 L36 178 Z" fill="url(#mannequin-grad)"/>
+          <!-- Правая нога (сужение к низу) -->
+          <path d="M76 106 L54 106 L56 178 L64 178 Z" fill="url(#mannequin-grad)"/>
       </svg>`;
       
   const eqArray = Object.keys(SLOTS).map(slot => ({ slot, item: IM[S.eq[slot]], pos: EQ_POS[slot] }))
@@ -348,6 +409,50 @@ function view(){
      <div class="card"><div class="t"><b>Баланс</b></div><b style="color:var(--ac)">${fmt(S.r)} ₽</b></div>
      <div class="card"><div class="t"><b>Цена всех вещей</b><small>Общая стоимость инвентаря</small></div><b style="color:var(--ac)">${fmt(invValue)} ₽</b></div>
      <div class="card"><div class="t"><b>Цена вещей на стенде</b><small>Бонус к доходу</small></div><b style="color:var(--ac2)">${fmt(getStandValue())} ₽</b></div>`;
+ } else if(tab==='settings'){
+  const usedCount = S.promos ? Object.keys(S.promos).length : 0;
+  h=`<h3 style="margin-top:0">Настройки</h3>
+    
+    <div class="card" style="flex-direction:column; align-items:stretch; gap:15px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <b>🎵 Музыка</b>
+            <button class="btn ${musicPlaying?'pri':''}" id="music-btn" onclick="toggleMusic()" style="padding:8px 16px;">
+                <span id="music-status">${musicPlaying?'ВКЛ':'ВЫКЛ'}</span>
+            </button>
+        </div>
+        <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <small style="color:var(--mut)">Громкость</small>
+                <small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small>
+            </div>
+            <input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)">
+        </div>
+    </div>
+    
+    <div class="card" style="flex-direction:column; align-items:stretch; gap:10px;">
+        <div style="display:flex; justify-content:space-between;">
+            <b>🎁 Промокод</b>
+            <small style="color:var(--mut)">Использовано: ${usedCount}/6</small>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="promo-input" placeholder="Введи код..." class="promo-inp" autocomplete="off">
+            <button class="btn pri" onclick="applyPromo()">ОК</button>
+        </div>
+    </div>
+    
+    <div class="card" style="flex-direction:column; align-items:stretch; gap:5px; padding:16px 18px;">
+        <b style="margin-bottom:8px;">👨‍💻 Создатели</b>
+        <a href="https://t.me/iticov" target="_blank" class="contact-link">
+            <span>Создатель игры</span>
+            <small class="tg-username">@iticov</small>
+        </a>
+        <a href="https://t.me/ro9mbo" target="_blank" class="contact-link">
+            <span>Помощник создателя</span>
+            <small class="tg-username">@ro9mbo</small>
+        </a>
+    </div>
+    
+    <button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
  }
  m.innerHTML=h;
  $('main').scrollTop = scrollPos; 
