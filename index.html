@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<title>DRIP FITS: GLOBAL 26</title>
+<title>DRIP SHOP</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{color-scheme:dark;--bg:#09090b;--card:rgba(30,30,40,0.85);--card-border:rgba(255,255,255,0.1);--fg:#f4f4f6;--mut:#8b8b99;--ac:#b6ff3c;--ac2:#ff3cac;--blur:blur(12px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
-#app{max-width:520px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative;z-index:10}
+#app{max-width:520px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative;z-index:10;display:none;}
 header{padding:20px 16px 10px;text-align:center;position:relative;z-index:15;flex:none}
 #bal{font-size:38px;font-weight:900;color:var(--ac);letter-spacing:.5px;text-shadow:0 0 15px rgba(182,255,60,.3)}
 #sub{font-size:12px;color:var(--mut);margin-top:4px;font-weight:bold;}
@@ -89,9 +89,25 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 .contact-link span {font-weight:700; font-size:14px;}
 .contact-link small {color:var(--mut); font-size:12px;}
 .tg-username {color:var(--ac); font-weight:900;}
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 </style>
 </head>
 <body>
+
+<div id="sub-gate" style="position: fixed; inset: 0; background: #09090b; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;">
+    <div style="font-size: 60px; margin-bottom: 20px; animation: pulse 2s infinite;">🔥</div>
+    <h1 style="font-size: 28px; color: #b6ff3c; margin: 0 0 10px;">DRIP SHOP</h1>
+    <p style="color: #8b8b99; font-size: 14px; margin-bottom: 30px; line-height: 1.5;">Чтобы начать играть, подпишись на наш Telegram-канал!<br>Там промокоды, конкурсы и новости.</p>
+    
+    <a href="https://t.me/DRIPSGAMES" target="_blank" style="width: 100%; max-width: 300px; padding: 16px; font-size: 16px; background: #b6ff3c; color: #000; font-weight: bold; border-radius: 14px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+        📢 Подписаться на @DRIPSGAMES
+    </a>
+    
+    <button id="check-sub" style="width: 100%; max-width: 300px; padding: 16px; font-size: 16px; background: #ff3cac; color: #fff; font-weight: bold; border-radius: 14px; border: none; cursor: pointer;">
+        Я подписался ✅
+    </button>
+</div>
+
 <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
 <div id="app">
  <header>
@@ -119,7 +135,6 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
     </div>
 </div>
 <script>
-// ТВОИ ДАННЫЕ ИЗ SUPABASE
 const SUPABASE_URL = "https://insflwxculpciwwcfplc.supabase.co"; 
 const SUPABASE_ANON_KEY = "sb_publishable_sjXSiT-ZE03BQptllpdzvg_sO8Ihgs-";
 const { createClient } = supabase;
@@ -235,6 +250,24 @@ function closeModal() { $('select-modal').classList.remove('open'); currentSlot 
 $('nav').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; tab=b.dataset.t; document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b)); view(); });
 setInterval(() => { if (S.autoLvl > 0) { S.r += getAutoValue(); head(); } S.timePlayed++; }, 1000);
 setInterval(save, 5000);
+
+// ЛОГИКА ПОДПИСКИ
+document.getElementById('check-sub').onclick = function() {
+    const btn = this;
+    btn.innerText = 'Проверяем...';
+    setTimeout(() => {
+        localStorage.setItem('subscribed', 'true');
+        document.getElementById('sub-gate').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }, 1500);
+};
+
+if (localStorage.getItem('subscribed') === 'true') {
+    document.getElementById('sub-gate').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+}
+
 head(); view();
 </script>
 </body>
