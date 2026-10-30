@@ -50,7 +50,6 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .mannequin-wrapper {position: relative;width: 160px;height: 340px;margin-bottom: 20px;z-index: 2;}
 .mannequin-base {width: 100%;height: 100%;display: block;}
 
-/* УВЕЛИЧЕННЫЕ ВЕЩИ */
 .eq-item {position: absolute;width: 100px;height: 100px;transform-origin: center center;filter: drop-shadow(0 10px 15px rgba(0,0,0,0.8));pointer-events: none;}
 .eq-item svg {width: 100%;height: 100%;}
 
@@ -59,7 +58,11 @@ nav svg{width:18px;height:18px;fill:currentColor;}
 .slot-btn b{font-size:14px;}
 .slot-btn small{color:var(--mut);font-size:12px;margin-left:10px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
 
-.shop-filters {display: flex;gap: 8px;overflow-x: auto;padding-bottom: 10px;margin-bottom: 10px;scrollbar-width: none;}
+/* ФИЛЬТРЫ И ПОИСК */
+.shop-controls {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
+.shop-search {width: 100%; padding: 14px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--card-border); color: var(--fg); font-size: 15px; outline: none; transition: 0.2s;}
+.shop-search:focus {border-color: var(--ac); box-shadow: 0 0 15px rgba(182,255,60,0.2);}
+.shop-filters {display: flex;gap: 8px;overflow-x: auto;padding-bottom: 5px;scrollbar-width: none;}
 .shop-filters::-webkit-scrollbar {display: none;}
 .filter-btn {padding: 8px 16px;border-radius: 20px;background: var(--card);border: 1px solid var(--card-border);color: var(--mut);font-size: 13px;font-weight: 700;white-space: nowrap;cursor: pointer;transition: 0.2s;}
 .filter-btn.on {background: var(--ac);color: #10130a;border-color: var(--ac);}
@@ -90,10 +93,6 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 .contact-link span {font-weight:700; font-size:14px;}
 .contact-link small {color:var(--mut); font-size:12px;}
 .tg-username {color:var(--ac); font-weight:900;}
-
-/* ПЛАШКА ДЛЯ АУДИО */
-.audio-toast {position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--card); border:1px solid var(--ac); color:var(--ac); padding:10px 20px; border-radius:20px; font-weight:bold; z-index:1000; display:none; animation: slideDown 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
-@keyframes slideDown { from { transform:translate(-50%, -100%); } to { transform:translate(-50%, 0); } }
 </style>
 </head>
 <body>
@@ -101,8 +100,6 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 <audio id="bg-music" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
-
-<div id="audio-toast" class="audio-toast" onclick="forcePlayMusic()">🔊 Нажми, чтобы включить звук</div>
 
 <div id="app">
  <header>
@@ -137,46 +134,24 @@ if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
 
-// --- МУЗЫКА (ПРИНУДИТЕЛЬНЫЙ СТАРТ) ---
+// --- МУЗЫКА (АВТОЗАПУСК ПРИ ЛЮБОМ ТАПЕ) ---
 const bgMusic = document.getElementById('bg-music');
-let musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
 let musicVolume = parseInt(localStorage.getItem('musicVol') || '40');
 bgMusic.volume = musicVolume / 100;
-let musicPlaying = false;
-let musicInitialized = false;
 
-function forcePlayMusic() {
-    if (!musicInitialized) {
-        musicInitialized = true;
-        if (musicEnabled) {
-            bgMusic.play().then(() => {
-                musicPlaying = true;
-                updateMusicUI();
-                $('audio-toast').style.display = 'none';
-            }).catch(e => {
-                $('audio-toast').style.display = 'block';
-            });
-        }
+function startMusic() {
+    // Если музыка на паузе, пробуем включить
+    if (bgMusic.paused) {
+        bgMusic.play().catch(e => {
+            console.log("Ждем взаимодействия для звука");
+        });
     }
 }
 
-// Вешаем на любые действия пользователя, чтобы браузер пропустил звук
-document.body.addEventListener('pointerdown', forcePlayMusic);
-document.body.addEventListener('touchstart', forcePlayMusic);
-
-function toggleMusic() {
-    if (bgMusic.paused) { bgMusic.play(); musicPlaying = true; musicEnabled = true; }
-    else { bgMusic.pause(); musicPlaying = false; musicEnabled = false; }
-    localStorage.setItem('musicEnabled', musicEnabled);
-    updateMusicUI();
-}
-
-function updateMusicUI() {
-    const el = document.getElementById('music-status');
-    if (el) el.innerText = musicPlaying ? 'ВКЛ' : 'ВЫКЛ';
-    const btn = document.getElementById('music-btn');
-    if (btn) btn.className = 'btn ' + (musicPlaying ? 'pri' : '');
-}
+// Вешаем на все возможные события (тап, клик, скролл) на уровне всего документа
+document.addEventListener('pointerdown', startMusic);
+document.addEventListener('touchstart', startMusic, {passive: true});
+document.addEventListener('click', startMusic);
 
 function setVolume(val) {
     musicVolume = parseInt(val);
@@ -249,16 +224,15 @@ const getAutoCost = () => Math.floor(500 * Math.pow(1.7, S.autoLvl));
 const SLOTS = { head: ['cap', 'mask', 'shades'], neck: ['chain'], top: ['hood', 'puff', 'jack', 'tee'], bot: ['cargo', 'jeans', 'boxers'], shoe: ['sneak', 'drill', 'socks'], wrist: ['watch'], back: ['bag', 'pack'], waist: ['belt'] };
 const SLOT_NAMES = { head: 'Голова / Лицо', neck: 'Шея (Цепь)', top: 'Верх', bot: 'Низ', shoe: 'Обувь', wrist: 'Запястье (Часы)', back: 'Спина (Сумка)', waist: 'Пояс (Ремень)' };
 
-// ИДЕАЛЬНЫЕ КООРДИНАТЫ (УВЕЛИЧЕН МАСШТАБ)
 const EQ_POS = {
-    head: { top: '11%', left: '50%', scale: 1.1, z: 6 },   // Кепка на всю голову
-    neck: { top: '23%', left: '50%', scale: 0.6, z: 5 },   // Цепь на шею
-    top: { top: '33%', left: '50%', scale: 2.0, z: 3 },    // Худи на весь торс
-    bot: { top: '68%', left: '50%', scale: 1.8, z: 2 },    // Штаны на все ноги
-    shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 },   // Кроссовки на ступни
-    wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 },  // Часы на руку
-    back: { top: '35%', left: '12%', scale: 1.5, z: 1 },   // Сумка за спиной
-    waist: { top: '49%', left: '50%', scale: 1.2, z: 4 }   // Ремень на пояс
+    head: { top: '11%', left: '50%', scale: 1.1, z: 6 },
+    neck: { top: '23%', left: '50%', scale: 0.6, z: 5 },
+    top: { top: '33%', left: '50%', scale: 2.0, z: 3 },
+    bot: { top: '68%', left: '50%', scale: 1.8, z: 2 },
+    shoe: { top: '87%', left: '50%', scale: 1.0, z: 2 },
+    wrist: { top: '45%', left: '12%', scale: 0.5, z: 7 },
+    back: { top: '35%', left: '12%', scale: 1.5, z: 1 },
+    waist: { top: '49%', left: '50%', scale: 1.2, z: 4 }
 };
 
 const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100000 }, 'DRIL': { r: 75000 }, 'DRIP': { r: 30000 }, 'USA': { r: 150000 } };
@@ -295,6 +269,7 @@ let tab='tap';
 let shopLimit = 20;
 let invLimit = 20;
 let shopFilter = 'all';
+let searchQuery = ''; // Переменная для поиска
 
 const CATEGORIES = {
     'all': { name: 'Все', types: null },
@@ -309,6 +284,48 @@ function setShopFilter(f) {
     shopFilter = f;
     shopLimit = 20;
     view();
+}
+
+function onSearchInput(val) {
+    searchQuery = val;
+    shopLimit = 20;
+    // Обновляем только список товаров, без перерисовки всей страницы (чтобы клавиатура не закрывалась)
+    const displayItems = getFilteredItems();
+    const container = document.getElementById('shop-items');
+    if (container) {
+        container.innerHTML = renderShopItems(displayItems);
+    }
+}
+
+function getFilteredItems() {
+    let displayItems = ITEMS;
+    if (shopFilter !== 'all') {
+        const allowed = CATEGORIES[shopFilter].types;
+        displayItems = displayItems.filter(i => allowed.includes(i.t));
+    }
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        displayItems = displayItems.filter(i => i.n.toLowerCase().includes(q));
+    }
+    return displayItems;
+}
+
+function renderShopItems(displayItems) {
+    if (displayItems.length === 0) return '<p style="text-align:center;color:var(--mut);margin-top:20px;">Ничего не найдено</p>';
+    
+    let html = displayItems.slice(0, shopLimit).map(i=>{
+        const o=S.own[i.id];
+        return `<div class="card">
+            <div class="ic">${artSpan(i)}</div>
+            <div class="t"><b>${i.n}</b><small style="color:var(--ac2)">${['Обычная','Редкая','Эпик','Легенда'][i.r]}</small><br><small>${fmt(i.p)} ₽</small></div>
+            <button class="btn ${o?'':'pri'}" onclick="buy('${i.id}')" ${o?'disabled':''}>${o?'Есть':'Купить'}</button>
+        </div>`;
+    }).join('');
+
+    if(shopLimit < displayItems.length) {
+        html += `<button class="btn" onclick="shopLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${shopLimit} из ${displayItems.length})</button>`;
+    }
+    return html;
 }
 
 function view(){
@@ -339,30 +356,19 @@ function view(){
      </div>`;
  } else if(tab==='shop'){
   h = '<h3 style="margin-top:0">Дрип Шоп</h3>';
+  
+  // Поле поиска и фильтры
+  h += '<div class="shop-controls">';
+  h += `<input type="text" id="shop-search" class="shop-search" placeholder="🔍 Поиск (например: часы, худи, Gucci...)" value="${searchQuery}" oninput="onSearchInput(this.value)" autocomplete="off">`;
   h += '<div class="shop-filters">';
   for(let key in CATEGORIES) {
       h += `<button class="filter-btn ${shopFilter === key ? 'on' : ''}" onclick="setShopFilter('${key}')">${CATEGORIES[key].name}</button>`;
   }
-  h += '</div>';
+  h += '</div></div>';
 
-  let displayItems = ITEMS;
-  if (shopFilter !== 'all') {
-      const allowed = CATEGORIES[shopFilter].types;
-      displayItems = ITEMS.filter(i => allowed.includes(i.t));
-  }
-
-  h += displayItems.slice(0, shopLimit).map(i=>{
-      const o=S.own[i.id];
-      return `<div class="card">
-          <div class="ic">${artSpan(i)}</div>
-          <div class="t"><b>${i.n}</b><small style="color:var(--ac2)">${['Обычная','Редкая','Эпик','Легенда'][i.r]}</small><br><small>${fmt(i.p)} ₽</small></div>
-          <button class="btn ${o?'':'pri'}" onclick="buy('${i.id}')" ${o?'disabled':''}>${o?'Есть':'Купить'}</button>
-      </div>`;
-  }).join('');
-
-  if(shopLimit < displayItems.length) {
-      h += `<button class="btn" onclick="shopLimit += 20; view();" style="width:100%; margin-top:10px;">Показать еще (${shopLimit} из ${displayItems.length})</button>`;
-  }
+  // Контейнер для товаров
+  const displayItems = getFilteredItems();
+  h += `<div id="shop-items">${renderShopItems(displayItems)}</div>`;
 
  } else if(tab==='inv'){
   h='<h3 style="margin-top:0">Твой Инвентарь</h3>';
@@ -450,14 +456,11 @@ function view(){
     
     <div class="card" style="flex-direction:column; align-items:stretch; gap:15px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <b>🎵 Музыка</b>
-            <button class="btn ${musicPlaying?'pri':''}" id="music-btn" onclick="toggleMusic()" style="padding:8px 16px;">
-                <span id="music-status">${musicPlaying?'ВКЛ':'ВЫКЛ'}</span>
-            </button>
+            <b>🎵 Громкость музыки</b>
         </div>
         <div>
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                <small style="color:var(--mut)">Громкость</small>
+                <small style="color:var(--mut)">Тише / Громче</small>
                 <small id="vol-label" style="color:var(--ac);font-weight:bold;">${musicVolume}%</small>
             </div>
             <input type="range" id="vol-slider" min="0" max="100" value="${musicVolume}" oninput="setVolume(this.value)">
@@ -490,7 +493,11 @@ function view(){
     <button class="btn" onclick="resetGame()" style="width:100%; background:rgba(255,60,60,0.15); border-color:rgba(255,60,60,0.4); color:#ff6666;">🗑 Сбросить прогресс</button>`;
  }
  m.innerHTML=h;
- if (tab !== 'shop' || scrollPos === 0) { $('main').scrollTop = scrollPos; }
+ 
+ // Восстанавливаем скролл (только если не в поиске)
+ if (tab !== 'shop' || !searchQuery) {
+    $('main').scrollTop = scrollPos; 
+ }
  
  if(tab==='tap'){
     $('tap').addEventListener('pointerdown',()=>{
@@ -515,7 +522,11 @@ function buyUpgrade(type){
 function buy(id){
     const item = ITEMS.find(x=>x.id===id);
     if(S.r >= item.p){
-        S.r -= item.p; S.own[id] = 1; save(); head(); view();
+        S.r -= item.p; S.own[id] = 1; save(); head(); 
+        // Не перерисовываем весь экран, чтобы поиск не сбрасывался
+        const displayItems = getFilteredItems();
+        const container = document.getElementById('shop-items');
+        if (container) container.innerHTML = renderShopItems(displayItems);
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
     } else alert('Мало кэша!');
 }
