@@ -116,6 +116,24 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 .ach-card.locked .ach-rew{color:var(--mut);}
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 #splash-screen{position:fixed;inset:0;background:#09090b;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.5s ease;opacity:1;pointer-events:none;}
+/* ===== MINI GAMES ===== */
+.g-row{display:flex;gap:8px}
+.g-row .btn{flex:1;padding:10px 4px}
+.g-inp{width:100%;padding:12px;border-radius:12px;border:1px solid var(--card-border);background:rgba(0,0,0,.5);color:var(--fg);font-size:16px;font-weight:700;outline:none;user-select:text;-webkit-user-select:text}
+.g-inp:focus{border-color:var(--ac)}
+.crash-mult{font-size:58px;font-weight:900;line-height:1;color:var(--fg)}
+.crash-mult.run{color:var(--ac);text-shadow:0 0 25px rgba(182,255,60,.5)}
+.crash-mult.win{color:#ffd34d;text-shadow:0 0 25px rgba(255,211,77,.5)}
+.crash-mult.dead{color:#ff4444;text-shadow:0 0 25px rgba(255,60,60,.5)}
+.hist{display:flex;gap:6px;overflow-x:auto;width:100%;scrollbar-width:none;min-height:26px;margin-bottom:6px}
+.hist::-webkit-scrollbar{display:none}
+.hist span{flex:none;padding:4px 10px;border-radius:10px;font-size:12px;font-weight:800;background:rgba(0,0,0,.35)}
+.mines-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.mtile{aspect-ratio:1;border-radius:12px;background:var(--card);border:1px solid var(--card-border);font-size:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.mtile:active{transform:scale(.92)}
+.mtile.safe{background:rgba(182,255,60,.15);border-color:var(--ac)}
+.mtile.mine{background:rgba(255,60,60,.2);border-color:#ff4444}
+.mtile.ghost{opacity:.45}
 </style>
 </head>
 <body>
@@ -159,6 +177,7 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
   <button data-t="inv"><svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/></svg>Вещи</button>
   <button data-t="stand"><svg viewBox="0 0 24 24"><path d="M12 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 6c-1.1 0-2 .9-2 2v4c0 .55.45 1 1 1h.5v6c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-6h.5c.55 0 1-.45 1-1v-4c0-1.1-.9-2-2-2h-2z"/></svg>Стенд</button>
   <button data-t="top"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Топ</button>
+  <button data-t="games"><svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Игры</button>
   <button data-t="profile"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Профиль</button>
   <button data-t="settings"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>Настр.</button>
  </nav>
@@ -484,6 +503,7 @@ function getSortedOwned() {
 function view() {
     const scrollPos = $('main').scrollTop;
     const m = $('main');
+    if (tab !== 'games') gamesLeave();
     let h = '';
 
     if (tab === 'tap') {
@@ -572,6 +592,8 @@ function view() {
             const unlocked = !!S.ach[a.id];
             h += `<div class="ach-card ${unlocked ? 'unlocked' : 'locked'}"><div class="ach-icon">${a.icon}</div><div class="ach-info"><b>${a.name}</b><small>${a.desc}</small></div><div class="ach-rew">${unlocked ? '✓' : '+' + fmt(a.rew) + ' ₽'}</div></div>`;
         });
+    } else if (tab === 'games') {
+        h = renderGames();
     } else if (tab === 'settings') {
         const usedCount = S.promos ? Object.keys(S.promos).length : 0;
         h = `<h3 style="margin-top:0">Настройки</h3>
@@ -666,6 +688,178 @@ function unequip(slot) {
     SFX.equip();
 }
 function closeModal() { $('select-modal').classList.remove('open'); currentSlot = null; }
+
+// ===== MINI GAMES =====
+let gameTab = 'crash';
+let GBET = 100;
+const CR = { phase: 'idle', bet: 0, mult: 1, crashAt: 1, t0: 0, raf: 0, auto: 0, autoVal: '', hist: [], msg: 'Сделай ставку и забери до краха' };
+const MN = { active: false, over: false, bet: 0, mines: 3, grid: [], open: [], hits: 0, msg: 'Выбери кол-во мин и начни игру' };
+
+function gamesLeave() { if (CR.phase === 'run') crashCash(); }
+function setGameTab(t) { if (t !== gameTab) gamesLeave(); gameTab = t; view(); }
+function betMod(type) {
+    if (CR.phase === 'run' || MN.active) return;
+    if (type === 'min') GBET = 10;
+    else if (type === 'half') GBET = Math.max(10, Math.floor(GBET / 2));
+    else if (type === 'x2') GBET = Math.max(10, Math.min(GBET * 2, Math.floor(S.r)));
+    else if (type === 'max') GBET = Math.max(10, Math.floor(S.r));
+    view();
+}
+function checkBet() {
+    const bet = Math.floor(GBET);
+    if (!(bet >= 10)) { toast('Минимальная ставка 10 ₽', 'error'); SFX.error(); return 0; }
+    if (bet > S.r) { toast('Мало кэша!', 'error'); SFX.error(); return 0; }
+    return bet;
+}
+
+function renderGames() {
+    const lock = (CR.phase === 'run' || MN.active) ? 'disabled' : '';
+    let h = `<h3 style="margin-top:0">Мини-игры</h3>
+    <div class="top-tabs">
+        <button class="top-tab ${gameTab === 'crash' ? 'on' : ''}" onclick="setGameTab('crash')">🚀 Краш</button>
+        <button class="top-tab ${gameTab === 'mines' ? 'on' : ''}" onclick="setGameTab('mines')">💣 Минное поле</button>
+    </div>
+    <div class="card" style="flex-direction:column;align-items:stretch;gap:10px">
+        <b>Ставка</b>
+        <input id="g-bet" class="g-inp" type="number" inputmode="numeric" value="${GBET}" oninput="GBET=Math.floor(+this.value)||0" ${lock}>
+        <div class="g-row">
+            <button class="btn" onclick="betMod('min')" ${lock}>Мин</button>
+            <button class="btn" onclick="betMod('half')" ${lock}>½</button>
+            <button class="btn" onclick="betMod('x2')" ${lock}>x2</button>
+            <button class="btn" onclick="betMod('max')" ${lock}>Макс</button>
+        </div>
+    </div>`;
+    h += gameTab === 'crash' ? crashHTML() : minesHTML();
+    return h;
+}
+
+// ---------- КРАШ ----------
+function crashHTML() {
+    const c = CR, running = c.phase === 'run';
+    const cls = running ? 'run' : c.phase === 'dead' ? 'dead' : c.phase === 'done' ? 'win' : '';
+    const mult = c.phase === 'idle' ? '1.00' : c.mult.toFixed(2);
+    const hist = c.hist.map(x => `<span style="color:${x >= 2 ? 'var(--ac)' : '#ff6666'}">${x.toFixed(2)}x</span>`).join('');
+    return `<div class="card" style="flex-direction:column;gap:6px;padding:20px 14px;align-items:center;text-align:center">
+        <div class="hist">${hist}</div>
+        <div style="font-size:40px">${c.phase === 'dead' ? '💥' : '🚀'}</div>
+        <div id="cr-mult" class="crash-mult ${cls}">${mult}x</div>
+        <div style="color:var(--mut);font-size:13px;font-weight:700;margin-top:4px">${c.msg}</div>
+    </div>
+    <div class="card" style="flex-direction:column;align-items:stretch;gap:10px">
+        <b>Авто-вывод (необязательно)</b>
+        <input id="cr-auto" class="g-inp" type="number" step="0.01" inputmode="decimal" placeholder="Например 2.00" value="${c.autoVal}" oninput="CR.autoVal=this.value" ${running ? 'disabled' : ''}>
+    </div>
+    <button id="cr-btn" class="btn ${running ? 'pk' : 'pri'}" style="width:100%;padding:16px;font-size:16px" onclick="crashAction()">${running ? 'Забрать ' + fmt(c.bet * c.mult) + ' ₽' : 'Играть'}</button>`;
+}
+function crashAction() {
+    ensureAudio();
+    if (CR.phase === 'run') { crashCash(); return; }
+    const bet = checkBet(); if (!bet) return;
+    S.r -= bet; save(); head();
+    const r = Math.random();
+    CR.crashAt = Math.min(1000, Math.max(1, Math.floor(0.96 / (1 - r) * 100) / 100));
+    CR.bet = bet; CR.mult = 1; CR.phase = 'run';
+    CR.auto = parseFloat(CR.autoVal) || 0;
+    if (CR.auto < 1.01) CR.auto = 0;
+    CR.msg = 'Ставка ' + fmt(bet) + ' ₽ — лови момент!';
+    CR.t0 = performance.now();
+    SFX.equip();
+    view();
+    CR.raf = requestAnimationFrame(crashTick);
+}
+function crashTick(now) {
+    if (CR.phase !== 'run') return;
+    CR.mult = Math.exp(0.1 * (now - CR.t0) / 1000);
+    if (CR.mult >= CR.crashAt) { crashEnd(); return; }
+    if (CR.auto && CR.mult >= CR.auto) { CR.mult = CR.auto; crashCash(); return; }
+    const m = $('cr-mult'), b = $('cr-btn');
+    if (m) m.textContent = CR.mult.toFixed(2) + 'x';
+    if (b) b.textContent = 'Забрать ' + fmt(CR.bet * CR.mult) + ' ₽';
+    CR.raf = requestAnimationFrame(crashTick);
+}
+function crashPushHist() { CR.hist.unshift(CR.crashAt); if (CR.hist.length > 12) CR.hist.pop(); }
+function crashCash() {
+    if (CR.phase !== 'run') return;
+    cancelAnimationFrame(CR.raf);
+    const win = Math.floor(CR.bet * CR.mult);
+    S.r += win; CR.phase = 'done';
+    CR.msg = `Забрано на x${CR.mult.toFixed(2)}: +${fmt(win - CR.bet)} ₽ (крах был бы на x${CR.crashAt.toFixed(2)})`;
+    crashPushHist(); save(); head();
+    toast(`🚀 Выигрыш +${fmt(win - CR.bet)} ₽`, 'success'); SFX.achiev();
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    checkAchievements();
+    if (tab === 'games') view();
+}
+function crashEnd() {
+    cancelAnimationFrame(CR.raf);
+    CR.mult = CR.crashAt; CR.phase = 'dead';
+    CR.msg = `Крах на x${CR.crashAt.toFixed(2)}: −${fmt(CR.bet)} ₽`;
+    crashPushHist(); save(); head();
+    toast('💥 Крах! −' + fmt(CR.bet) + ' ₽', 'error'); SFX.error();
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+    if (tab === 'games') view();
+}
+
+// ---------- МИННОЕ ПОЛЕ ----------
+function mineMult(k, m) { let x = 0.97; for (let i = 0; i < k; i++) x *= (25 - i) / (25 - m - i); return x; }
+function setMines(n) { if (MN.active) return; MN.mines = n; view(); }
+function minesHTML() {
+    const M = MN;
+    const opts = [1, 3, 5, 10, 20].map(n => `<button class="btn ${M.mines === n ? 'pri' : ''}" onclick="setMines(${n})" ${M.active ? 'disabled' : ''}>${n}</button>`).join('');
+    let g = '<div class="mines-grid">';
+    for (let i = 0; i < 25; i++) {
+        let cls = 'mtile', c = '';
+        if (M.open[i]) { cls += M.grid[i] ? ' mine' : ' safe'; c = M.grid[i] ? '💥' : '💎'; }
+        else if (M.over) { cls += ' ghost'; if (M.grid[i]) { cls += ' mine'; c = '💣'; } else c = '💎'; }
+        g += `<div class="${cls}" onclick="mineClick(${i})">${c}</div>`;
+    }
+    g += '</div>';
+    const curMult = M.hits ? mineMult(M.hits, M.mines) : 1;
+    let info = M.msg;
+    if (M.active) info = `Открыто: ${M.hits} · x${curMult.toFixed(2)}` + (M.hits < 25 - M.mines ? ` · далее x${mineMult(M.hits + 1, M.mines).toFixed(2)}` : '');
+    let btn;
+    if (M.active) btn = `<button class="btn pk" style="width:100%;padding:16px;font-size:16px" onclick="mineCash()" ${M.hits ? '' : 'disabled'}>${M.hits ? 'Забрать ' + fmt(M.bet * curMult) + ' ₽' : 'Открой клетку'}</button>`;
+    else btn = `<button class="btn pri" style="width:100%;padding:16px;font-size:16px" onclick="mineStart()">Начать игру</button>`;
+    return `<div class="card" style="flex-direction:column;align-items:stretch;gap:10px"><b>Количество мин</b><div class="g-row">${opts}</div></div>
+    <div style="text-align:center;color:var(--mut);font-size:13px;font-weight:700;margin:4px 0 10px">${info}</div>${g}${btn}`;
+}
+function mineStart() {
+    ensureAudio();
+    const bet = checkBet(); if (!bet) return;
+    S.r -= bet; save(); head();
+    const arr = Array(25).fill(false);
+    const idx = [...Array(25).keys()];
+    for (let i = 24; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+    for (let i = 0; i < MN.mines; i++) arr[idx[i]] = true;
+    MN.grid = arr; MN.open = Array(25).fill(false); MN.hits = 0; MN.bet = bet; MN.active = true; MN.over = false;
+    SFX.equip(); view();
+}
+function mineClick(i) {
+    if (!MN.active || MN.open[i]) return;
+    MN.open[i] = true;
+    if (MN.grid[i]) {
+        MN.active = false; MN.over = true;
+        MN.msg = `💥 Мина! −${fmt(MN.bet)} ₽`;
+        toast('💥 Мина! −' + fmt(MN.bet) + ' ₽', 'error'); SFX.error();
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+        view();
+    } else {
+        MN.hits++; SFX.tap();
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        if (MN.hits >= 25 - MN.mines) mineCash(); else view();
+    }
+}
+function mineCash() {
+    if (!MN.active || !MN.hits) return;
+    const mult = mineMult(MN.hits, MN.mines);
+    const win = Math.floor(MN.bet * mult);
+    S.r += win; MN.active = false; MN.over = true;
+    MN.msg = `✅ Забрано x${mult.toFixed(2)}: +${fmt(win - MN.bet)} ₽`;
+    save(); head();
+    toast(`💎 Выигрыш +${fmt(win - MN.bet)} ₽`, 'success'); SFX.achiev();
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    checkAchievements(); view();
+}
 
 $('nav').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
