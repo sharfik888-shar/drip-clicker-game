@@ -137,7 +137,7 @@ input[type=range]::-webkit-slider-thumb {-webkit-appearance: none;width: 22px;he
 /* ===== КЕЙСЫ ===== */
 .case-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:15px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:.2s;cursor:pointer}
 .case-card:active{transform:scale(.97)}
-.case-emoji{font-size:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+.case-icon{display:flex;align-items:center;justify-content:center;height:70px}
 .case-name{font-size:14px;font-weight:900}
 .case-progress{font-size:11px;color:var(--mut)}
 .case-price{color:var(--ac);font-weight:900;font-size:15px}
@@ -217,7 +217,7 @@ if(tg){try{tg.ready();tg.expand()}catch(e){}}
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.floor(n).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
 
-// ===== AUDIO (WebAudio SFX) =====
+// ===== AUDIO =====
 let audioCtx = null;
 function ensureAudio(){
     if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
@@ -353,15 +353,47 @@ const PROMOS = { 'JAMBO': { r: 50000 }, 'ITICOV': { r: 25000 }, '2026': { r: 100
 
 // ===== КЕЙСЫ =====
 const CASES = [
-    { id: 'belt',     name: 'Ремни',      emoji: '🥋', types: ['belt'],                    price: 5000  },
-    { id: 'tee',      name: 'Футболки',   emoji: '👕', types: ['tee'],                     price: 4000  },
-    { id: 'hood',     name: 'Худи',       emoji: '🧥', types: ['hood'],                    price: 12000 },
-    { id: 'shoe',     name: 'Обувь',      emoji: '👟', types: ['sneak','drill','socks'],   price: 20000 },
-    { id: 'mask',     name: 'Балаклавы',  emoji: '🥷', types: ['mask'],                    price: 25000 },
-    { id: 'chain',    name: 'Цепи',       emoji: '⛓️', types: ['chain'],                   price: 30000 },
-    { id: 'backpack', name: 'Рюкзаки',    emoji: '🎒', types: ['bag','pack'],              price: 40000 },
-    { id: 'watch',    name: 'Часы',       emoji: '⌚', types: ['watch'],                   price: 60000 },
+    { id: 'belt',     name: 'Ремни',      types: ['belt'],                    price: 5000,  c1: '#8a5a2b', c2: '#5c3a1a', accent: '#ffd34d' },
+    { id: 'tee',      name: 'Футболки',   types: ['tee'],                     price: 4000,  c1: '#d8d8e0', c2: '#8a8a99', accent: '#b6ff3c' },
+    { id: 'hood',     name: 'Худи',       types: ['hood'],                    price: 12000, c1: '#5a5a64', c2: '#2a2a30', accent: '#ff3cac' },
+    { id: 'shoe',     name: 'Обувь',      types: ['sneak','drill','socks'],   price: 20000, c1: '#3a7bd5', c2: '#1f3f73', accent: '#b6ff3c' },
+    { id: 'mask',     name: 'Балаклавы',  types: ['mask'],                    price: 25000, c1: '#2a2a34', c2: '#0f0f14', accent: '#ff4444' },
+    { id: 'chain',    name: 'Цепи',       types: ['chain'],                   price: 30000, c1: '#e8b93c', c2: '#8a6a1a', accent: '#ffffff' },
+    { id: 'backpack', name: 'Рюкзаки',    types: ['bag','pack'],              price: 40000, c1: '#c0392b', c2: '#7a1f14', accent: '#ffd34d' },
+    { id: 'watch',    name: 'Часы',       types: ['watch'],                   price: 60000, c1: '#4a4a55', c2: '#1a1a22', accent: '#b6ff3c' },
 ];
+
+function caseSvg(c) {
+    const uid = 'c' + c.id;
+    return `<svg viewBox="0 0 100 100" style="width:70px;height:70px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));">
+        <defs>
+            <linearGradient id="${uid}g" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="${c.c1}"/>
+                <stop offset="1" stop-color="${c.c2}"/>
+            </linearGradient>
+            <linearGradient id="${uid}l" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="${c.c1}"/>
+                <stop offset="1" stop-color="${c.c2}"/>
+            </linearGradient>
+        </defs>
+        <ellipse cx="50" cy="92" rx="36" ry="4" fill="rgba(0,0,0,.45)"/>
+        <path d="M14 46 Q14 22 50 22 Q86 22 86 46 Z" fill="${c.c2}" stroke="#0a0a0a" stroke-width="2"/>
+        <rect x="14" y="46" width="72" height="42" rx="4" fill="url(#${uid}g)" stroke="#0a0a0a" stroke-width="2"/>
+        <path d="M14 50 Q14 26 50 26 Q86 26 86 50 Z" fill="url(#${uid}l)" stroke="#0a0a0a" stroke-width="2"/>
+        <rect x="14" y="46" width="72" height="6" fill="${c.c2}" stroke="#0a0a0a" stroke-width="1.5"/>
+        <rect x="22" y="52" width="6" height="36" fill="${c.c2}" opacity=".55"/>
+        <rect x="72" y="52" width="6" height="36" fill="${c.c2}" opacity=".55"/>
+        <rect x="41" y="48" width="18" height="20" rx="2" fill="${c.accent}" stroke="#0a0a0a" stroke-width="1.8"/>
+        <rect x="44" y="44" width="12" height="8" rx="3" fill="none" stroke="${c.accent}" stroke-width="2.5"/>
+        <circle cx="50" cy="56" r="2.2" fill="#0a0a0a"/>
+        <rect x="49" y="56" width="2" height="6" fill="#0a0a0a"/>
+        <path d="M20 48 Q20 30 46 28" stroke="rgba(255,255,255,.5)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="18" cy="50" r="1.5" fill="${c.accent}"/>
+        <circle cx="82" cy="50" r="1.5" fill="${c.accent}"/>
+        <circle cx="18" cy="84" r="1.5" fill="${c.accent}"/>
+        <circle cx="82" cy="84" r="1.5" fill="${c.accent}"/>
+    </svg>`;
+}
 
 function closeCaseModal() { $('case-modal').classList.remove('open'); }
 
@@ -638,7 +670,7 @@ function view() {
             const canAfford = S.r >= c.price;
             const complete = owned === pool.length;
             h += `<div class="case-card" onclick="openCase('${c.id}')">
-                <div class="case-emoji">${c.emoji}</div>
+                <div class="case-icon">${caseSvg(c)}</div>
                 <div class="case-name">${c.name}</div>
                 <div class="case-progress">${owned}/${pool.length} собрано</div>
                 <div class="case-price">${complete ? 'ВСЁ СОБРАНО' : fmt(c.price) + ' ₽'}</div>
@@ -842,7 +874,6 @@ function renderGames() {
     return h;
 }
 
-// ---------- КРАШ ----------
 function crashHTML() {
     const c = CR, running = c.phase === 'run';
     const cls = running ? 'run' : c.phase === 'dead' ? 'dead' : c.phase === 'done' ? 'win' : '';
@@ -909,7 +940,6 @@ function crashEnd() {
     if (tab === 'games') view();
 }
 
-// ---------- МИННОЕ ПОЛЕ ----------
 function mineMult(k, m) { let x = 0.97; for (let i = 0; i < k; i++) x *= (25 - i) / (25 - m - i); return x; }
 function setMines(n) { if (MN.active) return; MN.mines = n; view(); }
 function minesHTML() {
@@ -970,7 +1000,6 @@ function mineCash() {
     checkAchievements(); view();
 }
 
-// ---------- 🎡 КОЛЕСО ----------
 function wheelHTML() {
     const w = WH;
     const segs = WHEEL_SEGMENTS.map(s => `<span style="display:inline-block;padding:3px 8px;margin:2px;border-radius:6px;background:${s.color}22;color:${s.color};font-weight:800;font-size:12px;">${s.mult}x</span>`).join('');
@@ -1013,7 +1042,6 @@ function wheelSpin() {
     }, 80);
 }
 
-// ---------- 🎲 КОСТИ ----------
 function diceHTML() {
     const d = DC;
     const winNums = d.mode === 'over' ? (100 - d.threshold) : d.threshold;
@@ -1069,7 +1097,6 @@ function diceRoll() {
     }, 80);
 }
 
-// ---------- 🪙 МОНЕТКА ----------
 function coinHTML() {
     const c = CF;
     return `<div class="card" style="flex-direction:column;gap:10px">
@@ -1106,8 +1133,8 @@ function coinFlip() {
                 const w = Math.floor(bet * 1.95);
                 S.r += w;
                 CF.msg = `Выпало ${CF.result} → +${fmt(w - bet)} ₽`;
-                toast(`🪙 +${fmt(w - bet)} ₽`, 'success'); SFX.achiev();
-                                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                                toast(`🪙 +${fmt(w - bet)} ₽`, 'success'); SFX.achiev();
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
             } else {
                 CF.msg = `Выпало ${CF.result} → −${fmt(bet)} ₽`;
                 toast(`🪙 −${fmt(bet)} ₽`, 'error'); SFX.error();
@@ -1119,7 +1146,6 @@ function coinFlip() {
     }, 100);
 }
 
-// ---------- 🎰 СЛОТЫ ----------
 function slotsHTML() {
     const s = SL;
     const reels = s.reels.join(' ');
